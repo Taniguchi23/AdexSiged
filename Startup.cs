@@ -18,6 +18,7 @@ namespace SIGED_API
 {
     public class Startup
     {
+        private readonly string _MyCors = "";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,27 +29,58 @@ namespace SIGED_API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            //services.AddCors();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings")));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SIGED_API", Version = "v1" });
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: _MyCors, builder =>
+                {
+                    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+                 
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            //app.UseCors(options =>
+            //{
+            //    options.WithOrigins("http://intranet.adexperu.edu.pe/APIS");
+            //    options.WithOrigins("http://intranet.adexperu.edu.pe");
+            //    options.AllowAnyMethod();
+            //    options.AllowAnyHeader();
+            //}
+            //);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SIGED_API v1"));
+              
             }
 
             app.UseHttpsRedirection();
 
+            app.UseSwagger();
+     
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("../swagger/v1/swagger.json", "SIGED_API v1"));
+            //string virDir = Configuration.GetSection("VirtualDirectory").Value;
+            //app.UseSwaggerUI(c =>
+            //{
+            //c.SwaggerEndpoint( virDir +"/swagger/v1/swagger.json", "SIGED_API v1");
+            //});
+
             app.UseRouting();
+
+            app.UseCors(_MyCors);
 
             app.UseAuthorization();
 
