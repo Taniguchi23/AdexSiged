@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using SIGED_API.Entity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,14 +7,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SIGED_API.Entity
+namespace SIGED_API.Models
 {
-    public class Postulante
+    public class PostulanteRequest
     {
         [Key]
         public int postulante_id { get; set; }
         public string nombre { get; set; }
-        public string ape_paterno { get; set; }
+        public string  ape_paterno { get; set; }
         public string ape_materno { get; set; }
         public string dni { get; set; }
         public DateTime fec_nacimiento { get; set; }
@@ -30,17 +31,15 @@ namespace SIGED_API.Entity
         public IFormFile FrontImage { get; set; }
 
         [NotMapped]
-        public IFormFile FrontArchivo{ get; set; }
+        public IFormFile FrontArchivo { get; set; }
 
 
-        //public List<Especialidad_postulante> Especialidades { get; set; }
+        public string Especialidades { get; set; }
 
-        //public class Especialidad_postulante
-        //{
-        //    public int especialidad_id { get; set; }
-        //    public int postulante_id { get; set; }
-        //}
-        //public string foto { get; set; }
-        //public byte cv { get; set; }
+        public class Especialidad_postulante
+        {
+            public int especialidad_id { get; set; }
+            public int postulante_id { get; set; }
+        }
     }
 }

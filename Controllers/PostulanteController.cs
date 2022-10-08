@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Hosting;
 
 
 using System.Threading.Tasks;
+using SIGED_API.Models;
+using Newtonsoft.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -118,24 +120,89 @@ namespace SIGED_API.Controllers
             return postulante;
         }
 
-        // POST api/<PostulanteController>
+        
+        //POST api/<PostulanteController>
+        //[HttpPost]
+        //public async Task<string> Post([FromForm] PostulanteRequest postulante)
+        //{
+        //    try
+        //    {
+        //        Postulante opostulante = new Postulante();
+        //        opostulante.nombre = postulante.nombre;
+        //        opostulante.ape_paterno = postulante.ape_paterno;
+        //        opostulante.ape_materno = postulante.ape_materno;
+        //        opostulante.nombre = postulante.dni;
+        //        opostulante.fec_nacimiento = postulante.fec_nacimiento;
+        //        opostulante.celular = postulante.celular;
+        //        opostulante.correo = postulante.correo;
+        //        opostulante.contrasena = postulante.contrasena;
+        //        opostulante.rep_contrasena = postulante.rep_contrasena;
+        //        string uniqueFileName = UploadedFile(opostulante);
+        //        opostulante.imageurl = uniqueFileName;
+        //        context.Postulante.Add(opostulante);
+        //        context.SaveChanges();
+
+
+        //        foreach (var oPostEspecialidad in postulante.Especialidades)
+        //        {
+        //            Especialidad_postulante oespecialidad = new Especialidad_postulante();
+        //            oespecialidad.postulante_id = oPostEspecialidad.postulante_id;
+        //            oespecialidad.especialidad_id = oPostEspecialidad.especialidad_id;
+        //            context.Especialidad_postulante.Add(oespecialidad);
+        //            context.SaveChanges();
+        //        }
+        //        return "OK";
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return ex.ToString();
+        //    }
+        //}
         [HttpPost]
-        public async Task<string> Post([FromBody] Postulante postulante)
+        public ActionResult Post([FromForm] PostulanteRequest postulante)
         {
             try
             {
-                string uniqueFileName = UploadedFile(postulante);
-                postulante.imageurl = uniqueFileName;
-                context.Postulante.Add(postulante);
+                Postulante opostulante = new Postulante();
+                opostulante.nombre = postulante.nombre;
+                opostulante.ape_paterno = postulante.ape_paterno;
+                opostulante.ape_materno = postulante.ape_materno;
+                opostulante.dni = postulante.dni;
+                opostulante.fec_nacimiento = postulante.fec_nacimiento;
+                opostulante.celular = postulante.celular;
+                opostulante.correo = postulante.correo;
+                opostulante.contrasena = postulante.contrasena;
+                opostulante.rep_contrasena = postulante.rep_contrasena;
+                opostulante.imageurl = postulante.imageurl;
+                opostulante.FrontImage = postulante.FrontImage;
+                string uniqueFileNameimage = UploadedFileImage(opostulante);
+                opostulante.imageurl = uniqueFileNameimage;
+                opostulante.FrontArchivo = postulante.FrontArchivo;
+                string uniqueFileName = UploadedFile(opostulante);
+                opostulante.archivocv = uniqueFileName;
+                context.Postulante.Add(opostulante);
                 context.SaveChanges();
-                return "OK";
-                
+
+
+                List<Especialidad_postulante> especialidadess = JsonConvert.DeserializeObject<List<Especialidad_postulante>>(postulante.Especialidades);
+                foreach (var oPostEspecialidad in especialidadess)
+                {
+                    Especialidad_postulante oespecialidad = new Especialidad_postulante();
+                    oespecialidad.postulante_id = opostulante.postulante_id;
+                    oespecialidad.especialidad_id = oPostEspecialidad.especialidad_id;
+                    context.Especialidad_postulante.Add(oespecialidad);
+                    context.SaveChanges();
+                }
+                return Ok("Success");
+
             }
             catch (Exception ex)
             {
-                return ex.ToString();
+                return Ok("Failed");
             }
         }
+
 
         //public ActionResult Post([FromBody] Postulante postulante)
         //{
@@ -170,13 +237,30 @@ namespace SIGED_API.Controllers
             }
         }
 
-        private string UploadedFile(Postulante postulante)
+        private string UploadedFileImage(Postulante postulante)
         {
             string uniqueFileName = null;
             if (postulante.celular != null)
             {
                 string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "images");
                 uniqueFileName = Guid.NewGuid().ToString() + "_" + postulante.FrontImage.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    postulante.FrontImage.CopyTo(fileStream);
+                }
+
+            }
+            return uniqueFileName;
+        }
+
+        private string UploadedFile(Postulante postulante)
+        {
+            string uniqueFileName = null;
+            if (postulante.celular != null)
+            {
+                string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "files");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + postulante.FrontArchivo.FileName;
                 string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {

@@ -89,15 +89,10 @@ namespace SIGED_API.Controllers
 
         // POST api/<SeleccionController>
         [HttpPost]
-        public ActionResult Seleccion(Seleccion seleccion)
+        public ActionResult GrabarSeleccionCabecera([FromBody] Seleccion seleccion)
         {
-            
-
             try
             {
-                Especialidad especialidad = new Especialidad();
-                Postulante postulante = new Postulante();
-
                 context.Seleccion_cabecera.Add(seleccion);
                 context.SaveChanges();
                 return Ok();
@@ -108,6 +103,7 @@ namespace SIGED_API.Controllers
             }
 
         }
+
 
         // PUT api/<SeleccionController>/5
         [HttpPut("{id}")]

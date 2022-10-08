@@ -33,5 +33,7 @@ namespace SIGED_API.Contexts
         public DbSet<Semestre> Semestre { get; set; }
 
         public DbSet<Tarifa> Tarifa { get; set; }
+
+        public DbSet<Revision> RevisionCV { get; set; }
     }
 }
