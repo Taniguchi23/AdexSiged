@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols;
 using SIGED_API.Contexts;
 using SIGED_API.Entity;
+using SIGED_API.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
+using static SIGED_API.Models.RequestCompetencia;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -65,20 +68,52 @@ namespace SIGED_API.Controllers
         public IEnumerable<Parametro> GetPreguntasEntrevistaCompetencias_Nivel2()
         {
 
-            var parametro = context.Parametro.Where(p => p.id_padre == 13).ToList();
+            var parametroprincipal = context.Parametro.ToList();
 
-            return parametro;
+            var parametro = context.Parametro.Where(p => p.id_padre == 2).ToList();
+
+            List<int> parametro2 = new List<int>();
+            foreach (var i in parametro)
+            {
+                parametro2.Add(i.parametro_id);
+            }
+
+
+            var result = from x in parametroprincipal
+                         where parametro2.Contains(x.id_padre)
+                         
+                         select x;
+
+            return result;
+
         }
+
+
 
         [HttpGet("api/PreguntasEntrevistaTecnica_Nivel2")]
         public IEnumerable<Parametro> GetPreguntasEntrevistaTecnica_Nivel2()
         {
 
-            var parametro = context.Parametro.Where(p => p.id_padre == 19).ToList();
+            var parametroprincipal = context.Parametro.ToList();
 
-            return parametro;
+            var parametro = context.Parametro.Where(p => p.id_padre == 3).ToList();
+
+            List<int> parametro2 = new List<int>();
+            foreach (var i in parametro)
+            {
+                parametro2.Add(i.parametro_id);
+            }
+
+
+            var result = from x in parametroprincipal
+                         where parametro2.Contains(x.id_padre)
+
+                         select x;
+
+            return result;
+
         }
-
+        //{correo}/{contrasena}
         // GET api/<SeleccionController>/5
         [HttpGet("{id}")]
         public Seleccion Get(int id)
@@ -87,19 +122,133 @@ namespace SIGED_API.Controllers
             return postulante;
         }
 
+        [HttpGet("GetSeleccionbyCode/{id}")]
+        public SeleccionInformacion GetSeleccionbyCode(int id)
+        {
+            SeleccionInformacion Objseleccion = new SeleccionInformacion();
+
+            Revision _revision = new Revision();
+
+             _revision = context.Seleccion_detalle.Join(context.RevisionCV,
+                sd => sd.revision_id,
+                r => r.revision_id,
+                (sd,r) => new { sd, r }
+                ).Where(c => c.sd.seleccion_id == id)
+                .Select(res => new Revision()
+                 {
+                    fecha_rev = res.r.fecha_rev,
+                    seleccion_c1 = res.r.seleccion_c1
+
+                }).FirstOrDefault();
+
+            Objseleccion.RevisionCV = _revision;
+
+            E_Competencia _competencia = new E_Competencia();
+
+            _competencia = context.Seleccion_detalle.Join(context.E_Competencia,
+               sd => sd.e_competencia_id,
+               r => r.e_competencia_id,
+               (sd, r) => new { sd, r }
+               ).Where(c => c.sd.seleccion_id == id)
+               .Select(res => new E_Competencia()
+               {
+                   fecha = res.r.fecha,
+                   comentario_1 = res.r.comentario_1
+
+               }).FirstOrDefault();
+
+            Objseleccion.E_Competencia = _competencia;
+
+            //RequestCompetencia _competenciab = new RequestCompetencia();
+
+            //_competenciab = context.Seleccion_detalle.Join(context.E_Competencia,
+            //   sd => sd.e_competencia_id,
+            //   r => r.e_competencia_id,
+            //   (sd, r) => new { sd, r }
+            //   ).Where(c => c.sd.seleccion_id == id)
+            //   .Select(res => new RequestCompetencia()
+            //   {
+            //       fecha = res.r.fecha,
+            //       comentario_1 = res.r.comentario_1
+                  
+
+            //   }).FirstOrDefault();
+
+            //Objseleccion.E_Competenciab = _competenciab;
+
+
+            E_Tecnica _tecnica = new E_Tecnica();
+
+            _tecnica = context.Seleccion_detalle.Join(context.E_Tecnica,
+               sd => sd.e_tecnica_id,
+               r => r.e_tecnica_id,
+               (sd, r) => new { sd, r }
+               ).Where(c => c.sd.seleccion_id == id)
+               .Select(res => new E_Tecnica()
+               {
+                   fecha = res.r.fecha,
+                   comentario_1 = res.r.comentario_1
+
+               }).FirstOrDefault();
+
+            Objseleccion.E_Tecnica = _tecnica;
+
+
+            E_JefeAcademico _jefeacademico = new E_JefeAcademico();
+
+            _jefeacademico = context.Seleccion_detalle.Join(context.E_JefeAcademico,
+               sd => sd.entrevistaja_id,
+               r => r.entrevistaja_id,
+               (sd, r) => new { sd, r }
+               ).Where(c => c.sd.seleccion_id == id)
+               .Select(res => new E_JefeAcademico()
+               {
+                   fecha = res.r.fecha,
+                   apreciacion = res.r.apreciacion
+
+               }).FirstOrDefault();
+
+            Objseleccion.E_JefeAcademico = _jefeacademico;
+
+            return Objseleccion;
+
+        }
+
+        [HttpGet("GetSeleccionbyParameter/{idpostulante}/{idsemestre}/{idarea}")]
+        public Seleccion GetSeleccionbyParameter(int idpostulante, int idsemestre, int idarea)
+        {
+            var postulante = context.Seleccion_cabecera.FirstOrDefault(p => p.postulante_id == idpostulante || p.semestre_id == idsemestre || p.area_id == idarea);
+            return postulante;
+        }
+
+
         // POST api/<SeleccionController>
         [HttpPost]
-        public ActionResult GrabarSeleccionCabecera([FromBody] Seleccion seleccion)
+        public int GrabarSeleccionCabecera([FromBody] Seleccion seleccion)
         {
             try
             {
-                context.Seleccion_cabecera.Add(seleccion);
-                context.SaveChanges();
-                return Ok();
+                var postulante = context.Seleccion_cabecera.FirstOrDefault(p => p.postulante_id == seleccion.postulante_id & p.semestre_id == seleccion.semestre_id & p.area_id == seleccion.area_id);
+
+                if (postulante  != null)
+                {
+                    return postulante.seleccion_id;
+                }
+                else
+                {
+                    context.Seleccion_cabecera.Add(seleccion);
+                    context.SaveChanges();
+                    return seleccion.seleccion_id;
+                }
+                
+
+                //return Ok();
+                
             }
             catch (Exception ex)
             {
-                return BadRequest();
+                return seleccion.seleccion_id;
+                //return BadRequest();
             }
 
         }

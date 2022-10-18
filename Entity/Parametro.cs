@@ -12,5 +12,10 @@ namespace SIGED_API.Entity
         public int parametro_id { get; set; }
         public string descripcion { get; set; }
         public int id_padre { get; set; }
+
+        internal bool In(object countrycodes)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

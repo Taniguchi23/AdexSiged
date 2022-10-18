@@ -9,7 +9,8 @@ namespace SIGED_API.Entity
     public class E_Tecnica
     {
         [Key]
-        public int e_competencia { get; set; }
+
+        public int e_tecnica_id { get; set; }
         public DateTime fecha { get; set; }
         public string comentario_1 { get; set; }
         public string comentario_2 { get; set; }
@@ -22,8 +23,6 @@ namespace SIGED_API.Entity
         public string comentario_9 { get; set; }
         public string comentario_10 { get; set; }
         public string comentario_11 { get; set; }
-        public string comentario_12 { get; set; }
-
         public string apreciacion { get; set; }
 
         public int id_hora_pedagogica { get; set; }

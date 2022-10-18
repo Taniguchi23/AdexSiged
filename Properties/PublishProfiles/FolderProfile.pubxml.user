@@ -4,7 +4,8 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <_PublishTargetUrl>C:\Ronald\APIS</_PublishTargetUrl>
-    <History>True|2022-09-16T20:35:52.8018764Z;False|2022-09-16T15:35:41.1768599-05:00;True|2022-09-16T15:31:21.3972729-05:00;False|2022-09-16T15:30:58.7689696-05:00;True|2022-09-16T14:51:40.0956258-05:00;</History>
+    <_PublishTargetUrl>C:\Ronald\ADEX\SIIGED\APIS</_PublishTargetUrl>
+    <History>True|2022-10-17T22:55:29.4721278Z;True|2022-10-16T11:24:00.9529336-05:00;True|2022-10-15T05:10:24.1170126-05:00;True|2022-10-14T16:00:02.2335427-05:00;True|2022-10-14T03:30:31.8025632-05:00;True|2022-10-11T10:02:02.6341863-05:00;True|2022-09-16T15:35:52.8018764-05:00;False|2022-09-16T15:35:41.1768599-05:00;True|2022-09-16T15:31:21.3972729-05:00;False|2022-09-16T15:30:58.7689696-05:00;True|2022-09-16T14:51:40.0956258-05:00;</History>
+    <LastFailureDetails />
   </PropertyGroup>
 </Project>

@@ -9,7 +9,7 @@ namespace SIGED_API.Entity
     public class E_JefeAcademico
     {
         [Key]
-        public int e_competencia { get; set; }
+        public int entrevistaja_id { get; set; }
         public DateTime fecha { get; set; }
     
         public string apreciacion { get; set; }
