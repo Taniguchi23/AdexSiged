@@ -51,5 +51,11 @@ namespace SIGED_API.Contexts
         public DbSet<Nivel> Nivel { get; set; }
 
         public DbSet<Habilidad> Habilidad { get; set; }
+
+        public DbSet<Rubrica_Modelo> Rubrica_Modelo { get; set; }
+
+        public DbSet<Fortaleza> Fortaleza { get; set; }
+
+        public DbSet<Oportunidad> Oportunidad { get; set; }
     }
 }

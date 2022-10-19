@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using Microsoft.AspNetCore.Hosting;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -41,43 +42,37 @@ namespace SIGED_API.Controllers
 
         // POST api/<ModeloController>
         [HttpPost]
-        public ActionResult Post([FromForm] Modelo modelo)
+        public int GrabarModelo([FromBody] Modelo modelo)
         {
-            try
-            {
-                Modelo omodelo = new Modelo();
-                omodelo.fecha_mod = modelo.fecha_mod;
-                omodelo.observador_id = modelo.observador_id;
-                omodelo.postulante_id = modelo.postulante_id;
-                omodelo.Hora_inicial = modelo.Hora_inicial;
-                omodelo.Hora_final = modelo.Hora_final;
-                omodelo.area_id = modelo.area_id;
-                omodelo.tema = modelo.tema;
-                omodelo.apreciacion = modelo.apreciacion;
-                omodelo.referencia = modelo.referencia;
-                omodelo.FrontImage = modelo.FrontImage;
-                string uniqueFileNameimage = UploadedFileImage(omodelo);
-                omodelo.referencia = uniqueFileNameimage;
-                context.Modelo.Add(omodelo);
-                context.SaveChanges();
+            
+                var vmodelo = context.Modelo.FirstOrDefault(p => p.postulante_id == modelo.postulante_id &  p.area_id == modelo.area_id);
 
+                if (vmodelo != null)
+                {
+                    return vmodelo.modelo_id;
+                }
+                else
+                {
+                    Modelo ommodelo = new Modelo();
+                    ommodelo.fecha_mod = modelo.fecha_mod;
+                    ommodelo.observador_id = modelo.observador_id;
+                    ommodelo.postulante_id = modelo.postulante_id;
+                    ommodelo.Hora_inicial = modelo.Hora_inicial;
+                    ommodelo.Hora_final = modelo.Hora_final;
+                    ommodelo.area_id = modelo.area_id;
+                    ommodelo.tema = modelo.tema;
+                    //omodelo.apreciacion = modelo.apreciacion;
+                    //omodelo.referencia = modelo.referencia;
+                    //omodelo.FrontImage = modelo.FrontImage;
+                    //string uniqueFileNameimage = UploadedFileImage(omodelo);
+                    //omodelo.referencia = uniqueFileNameimage;
+                    context.Modelo.Add(ommodelo);
+                    context.SaveChanges();
 
-                //List<Especialidad_postulante> especialidadess = JsonConvert.DeserializeObject<List<Especialidad_postulante>>(postulante.Especialidades);
-                //foreach (var oPostEspecialidad in especialidadess)
-                //{
-                //    Especialidad_postulante oespecialidad = new Especialidad_postulante();
-                //    oespecialidad.postulante_id = opostulante.postulante_id;
-                //    oespecialidad.especialidad_id = oPostEspecialidad.especialidad_id;
-                //    context.Especialidad_postulante.Add(oespecialidad);
-                //    context.SaveChanges();
-                //}
-                return Ok("Success");
-
-            }
-            catch (Exception ex)
-            {
-                return Ok("Failed");
-            }
+                    return modelo.modelo_id;
+                }
+            
+            
         }
 
         // PUT api/<ModeloController>/5

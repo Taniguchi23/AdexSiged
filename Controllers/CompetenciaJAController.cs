@@ -52,7 +52,7 @@ namespace SIGED_API.Controllers
 
                 Seleccion_detalle oseleccion_detalle = new Seleccion_detalle();
                 oseleccion_detalle.seleccion_id = juradoacademico.seleccion_id;
-                oseleccion_detalle.entrevistaja_id = juradoacademico.entrevistaja_id;
+                oseleccion_detalle.entrevistaja_id = ojefeacedemico.entrevistaja_id;
                 context.Seleccion_detalle.Add(oseleccion_detalle);
                 context.SaveChanges();
                 return Ok("Success");

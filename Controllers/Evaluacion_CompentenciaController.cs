@@ -69,7 +69,7 @@ namespace SIGED_API.Controllers
 
                 Seleccion_detalle oseleccion_detalle = new Seleccion_detalle();
                 oseleccion_detalle.seleccion_id = competencia.seleccion_id;
-                oseleccion_detalle.e_competencia_id = competencia.e_competencia_id;
+                oseleccion_detalle.e_competencia_id = ocompetencia.e_competencia_id;
                 context.Seleccion_detalle.Add(oseleccion_detalle);
                 context.SaveChanges();
 

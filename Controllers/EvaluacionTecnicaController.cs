@@ -62,7 +62,7 @@ namespace SIGED_API.Controllers
 
                 Seleccion_detalle oseleccion_detalle = new Seleccion_detalle();
                 oseleccion_detalle.seleccion_id = tecnica.seleccion_id;
-                oseleccion_detalle.e_tecnica_id = tecnica.e_tecnica_id;
+                oseleccion_detalle.e_tecnica_id = otecnica.e_tecnica_id;
                 context.Seleccion_detalle.Add(oseleccion_detalle);
                 context.SaveChanges();
                 return Ok("Success");
