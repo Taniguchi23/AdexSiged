@@ -57,5 +57,25 @@ namespace SIGED_API.Contexts
         public DbSet<Fortaleza> Fortaleza { get; set; }
 
         public DbSet<Oportunidad> Oportunidad { get; set; }
+
+        public DbSet<DEPARTAMENTO> DEPARTAMENTO { get; set; }
+
+        public DbSet<PROVINCIA> PROVINCIA { get; set; }
+
+        public DbSet<DISTRITO> DISTRITO { get; set; }
+
+        public DbSet<TIPOVIA> TIPOVIA { get; set; }
+
+        public DbSet<Pregrado> Pregrado { get; set; }
+
+        public DbSet<Postgrado> Postgrado { get; set; }
+
+        public DbSet<Rubrica> Rubrica { get; set; }
+
+        public DbSet<GRADOACAD_PREGRADO> GRADOACAD_PREGRADO { get; set; }
+
+        public DbSet<GRADOACAD_POSTGRADO> GRADOACAD_POSTGRADO { get; set; }
+
+        public DbSet<AFP> AFP { get; set; }
     }
 }

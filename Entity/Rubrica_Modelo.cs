@@ -6,7 +6,6 @@ namespace SIGED_API.Entity
     {
         [Key]
         public int rubrica_mod_id { get; set; }
-
         public int rubrica_id { get; set; }
         public int modelo_id { get; set; }
         public int puntaje { get; set; }

@@ -32,6 +32,7 @@ namespace SIGED_API
 
             //services.AddCors();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings")));
+            services.AddDbContext<AppDbContext2>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings")));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

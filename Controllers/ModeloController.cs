@@ -10,6 +10,9 @@ using System.IO;
 using System.Web;
 using Microsoft.AspNetCore.Hosting;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Modelo = SIGED_API.Entity.Modelo;
+//using Modelo2 = SIGED_API.Models.Modelo;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,10 +23,12 @@ namespace SIGED_API.Controllers
     public class ModeloController : ControllerBase
     {
         private readonly AppDbContext context;
+        private readonly AppDbContext2 context2;
         private readonly IWebHostEnvironment webHostEnviroment;
-        public ModeloController(AppDbContext context, IWebHostEnvironment webHost)
+        public ModeloController(AppDbContext context, AppDbContext2 context2, IWebHostEnvironment webHost)
         {
             this.context = context;
+            this.context2 = context2;
             webHostEnviroment = webHost;
         }
         // GET: api/<ModeloController>
@@ -61,15 +66,10 @@ namespace SIGED_API.Controllers
                     ommodelo.Hora_final = modelo.Hora_final;
                     ommodelo.area_id = modelo.area_id;
                     ommodelo.tema = modelo.tema;
-                    //omodelo.apreciacion = modelo.apreciacion;
-                    //omodelo.referencia = modelo.referencia;
-                    //omodelo.FrontImage = modelo.FrontImage;
-                    //string uniqueFileNameimage = UploadedFileImage(omodelo);
-                    //omodelo.referencia = uniqueFileNameimage;
                     context.Modelo.Add(ommodelo);
                     context.SaveChanges();
 
-                    return modelo.modelo_id;
+                    return ommodelo.modelo_id;
                 }
             
             
@@ -77,8 +77,18 @@ namespace SIGED_API.Controllers
 
         // PUT api/<ModeloController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult Put(int id, [FromForm] Modelo modelo)
         {
+            if (modelo.modelo_id == id)
+            {
+                
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+
         }
 
         // DELETE api/<ModeloController>/5
@@ -87,21 +97,6 @@ namespace SIGED_API.Controllers
         {
         }
 
-        private string UploadedFileImage(Modelo modelo)
-        {
-            string uniqueFileName = null;
-            if (modelo.Hora_final != null)
-            {
-                string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "images");
-                uniqueFileName = Guid.NewGuid().ToString() + "_" + modelo.FrontImage.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    modelo.FrontImage.CopyTo(fileStream);
-                }
-
-            }
-            return uniqueFileName;
-        }
+     
     }
 }

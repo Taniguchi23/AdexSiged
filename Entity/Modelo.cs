@@ -19,11 +19,13 @@ namespace SIGED_API.Entity
         public int area_id { get; set; }
 
         public string tema { get; set; }
-        public string referencia { get; set; }
-        public bool apreciacion { get; set; }
+        //public string referencia { get; set; }
+        //public bool apreciacion { get; set; }
 
-        [NotMapped]
-        public IFormFile FrontImage { get; set; }
+        //public int max_puntaje { get; set; }
+
+        //[NotMapped]
+        //public IFormFile FrontImage { get; set; }
 
     }
 }
