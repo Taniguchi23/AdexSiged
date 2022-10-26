@@ -64,5 +64,9 @@ namespace SIGED_API.Contexts
         public DbSet<EVALUACION> EVALUACION { get; set; }
 
         public DbSet<DETALLE_EVALUACION> DETALLE_EVALUACION { get; set; }
+
+        public DbSet<NOTIFICACION> NOTIFICACION { get; set; }
+
+        public DbSet<PROGRAMACION> PROGRAMACION { get; set; }
     }
 }
