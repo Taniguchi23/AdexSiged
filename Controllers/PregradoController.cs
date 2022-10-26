@@ -14,9 +14,9 @@ namespace SIGED_API.Controllers
     [ApiController]
     public class PregradoController : ControllerBase
     {
-        private readonly AppDbContext context;
+        private readonly AppDbContext2 context;
 
-        public PregradoController(AppDbContext context)
+        public PregradoController(AppDbContext2 context)
         //public PostulanteController(AppDbContext context)
         {
             this.context = context;

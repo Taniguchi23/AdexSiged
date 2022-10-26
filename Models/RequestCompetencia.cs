@@ -10,7 +10,6 @@ namespace SIGED_API.Models
     {
         [Key]
 
-        [NotMapped]
         public int e_competencia_id { get; set; }
         public DateTime fecha { get; set; }
         public string comentario_1 { get; set; }
@@ -35,7 +34,6 @@ namespace SIGED_API.Models
         public string comentario_20 { get; set; }
         public bool estado { get; set; }
 
-        [NotMapped]
         public int sel_detalle_id { get; set; }
         public int seleccion_id { get; set; }
         public int evaluacion_id { get; set; }

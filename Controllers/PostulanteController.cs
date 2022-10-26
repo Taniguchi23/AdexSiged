@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Threading.Tasks;
 using SIGED_API.Models;
 using Newtonsoft.Json;
+using Postulante = SIGED_API.Entity.Postulante;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -120,7 +121,40 @@ namespace SIGED_API.Controllers
             return postulante;
         }
 
-        
+
+        [HttpGet("GetImagePostulante/{id}")]
+        public async Task<IActionResult> GetImage([FromRoute] int id)
+        {
+
+            var postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
+
+            string path = webHostEnviroment.ContentRootPath + "\\images\\";
+            var filePath = path + postulante.imageurl;
+            if (System.IO.File.Exists(filePath))
+            {
+                byte[] b = System.IO.File.ReadAllBytes(filePath);
+                return File(b, "image/png");
+            }
+            return null;
+        }
+
+        [HttpGet("GetArchivoPostulante/{id}")]
+        public async Task<IActionResult> GetFile([FromRoute] int id)
+        {
+
+            var postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
+
+            string path = webHostEnviroment.ContentRootPath + "\\files\\";
+            var filePath = path + postulante.archivocv;
+            if (System.IO.File.Exists(filePath))
+            {
+                byte[] b = System.IO.File.ReadAllBytes(filePath);
+                return File(b, "application/pdf");
+            }
+            return null;
+        }
+
+
         //POST api/<PostulanteController>
         //[HttpPost]
         //public async Task<string> Post([FromForm] PostulanteRequest postulante)

@@ -41,7 +41,7 @@ namespace SIGED_API.Controllers
 
         // POST api/<FichaController>
         [HttpPost]
-        public ActionResult Post([FromForm] FichaDatosRequest ficha)
+        public ActionResult Post([FromBody] FichaDatosRequest ficha)
         {
             try
             {
@@ -53,53 +53,57 @@ namespace SIGED_API.Controllers
                 context2.Estudio_Realizado.Add(oestudio);
                 context2.SaveChanges();
 
-                List<Pregrado> pregrados = JsonConvert.DeserializeObject<List<Pregrado>>(ficha.Pregrados);
-                foreach (var oPostpregrados in pregrados)
+
+                foreach (var opregrados in ficha.Pregrados)
                 {
                     Pregrado opregrado = new Pregrado();
                     opregrado.estudio_id = oestudio.estudio_id;
-                    opregrado.centro_estudio = oPostpregrados.centro_estudio;
-                    opregrado.carrera = oPostpregrados.carrera;
-                    opregrado.grado_acad = oPostpregrados.grado_acad;
-                    opregrado.fecha_ingreso = oPostpregrados.fecha_ingreso;
-                    opregrado.fecha_salida = oPostpregrados.fecha_salida;
+                    opregrado.centro_estudio = opregrados.centro_estudio;
+                    opregrado.carrera = opregrados.carrera;
+                    opregrado.grado_acad = opregrados.grado_acad;
+                    opregrado.fecha_ingreso = opregrados.fecha_ingreso;
+                    opregrado.fecha_salida = opregrados.fecha_salida;
                     context2.Pregrado.Add(opregrado);
                     context2.SaveChanges();
                 }
 
-                List<Postgrado> postgrado = JsonConvert.DeserializeObject<List<Postgrado>>(ficha.Postgrados);
-                foreach (var oPostpostgrados in postgrado)
+
+                foreach (var opostgrados in ficha.Postgrados)
                 {
                     Postgrado opostgrado = new Postgrado();
                     opostgrado.estudio_id = oestudio.estudio_id;
-                    opostgrado.centro_estudio = oPostpostgrados.centro_estudio;
-                    opostgrado.especializacion = oPostpostgrados.especializacion;
-                    opostgrado.nivel = oPostpostgrados.nivel;
-                    opostgrado.fecha_ingreso = oPostpostgrados.fecha_ingreso;
-                    opostgrado.fecha_salida = oPostpostgrados.fecha_salida;
+                    opostgrado.centro_estudio = opostgrados.centro_estudio;
+                    opostgrado.especializacion = opostgrados.especializacion;
+                    opostgrado.nivel = opostgrados.nivel;
+                    opostgrado.fecha_ingreso = opostgrados.fecha_ingreso;
+                    opostgrado.fecha_salida = opostgrados.fecha_salida;
                     context2.Postgrado.Add(opostgrado);
                     context2.SaveChanges();
                 }
 
 
-                List<NIVEL_INGLES> ingles = JsonConvert.DeserializeObject<List<NIVEL_INGLES>>(ficha.Idioma_Ingles);
-                foreach (var oPostingles in ingles)
+
+
+                foreach (var oPostingles in ficha.Idioma_Ingles)
                 {
                     NIVEL_INGLES oingles = new NIVEL_INGLES();
                     oingles.ESTUDIO_ID = oestudio.estudio_id;
-                    oingles.IDIOMA_ID = oPostingles.IDIOMA_ID;
-                    oingles.NIVELESTUDIO_ID = oPostingles.NIVELESTUDIO_ID;
+                    oingles.IDIOMA_ID = oPostingles.idioma_id;
+                    oingles.NIVELESTUDIO_ID = oPostingles.nivel_ingles_id;
                     context2.NIVEL_INGLES.Add(oingles);
                     context2.SaveChanges();
                 }
 
-                List<NIVEL_OFIMATICA> ofimaticas = JsonConvert.DeserializeObject<List<NIVEL_OFIMATICA>>(ficha.Ofimatica);
-                foreach (var oPostofimatica in ofimaticas)
+
+
+
+         
+                foreach (var oPostofimatica in ficha.Ofimatica)
                 {
                     NIVEL_OFIMATICA oofimatica = new NIVEL_OFIMATICA();
                     oofimatica.ESTUDIO_ID = oestudio.estudio_id;
-                    oofimatica.OFIMATICA_ID = oPostofimatica.OFIMATICA_ID;
-                    oofimatica.NIVELESTUDIO_ID = oPostofimatica.NIVELESTUDIO_ID;
+                    oofimatica.OFIMATICA_ID = oPostofimatica.ofimatica_id;
+                    oofimatica.NIVELESTUDIO_ID = oPostofimatica.nivel_ofimatica_id;
                     context2.NIVEL_OFIMATICA.Add(oofimatica);
                     context2.SaveChanges();
                 }
@@ -110,18 +114,18 @@ namespace SIGED_API.Controllers
                 context2.EXPERIENCIA.Add(oexperiencia);
                 context2.SaveChanges();
 
-                List<EXPERIENCIA_LABORAL> experiencialaboral= JsonConvert.DeserializeObject<List<EXPERIENCIA_LABORAL>>(ficha.Experiencia);
-                foreach (var oPostexperiencialaboral in experiencialaboral)
+           
+                foreach (var oPostexperiencialaboral in ficha.Experiencia)
                 {
                     EXPERIENCIA_LABORAL oexperiencialaboral = new EXPERIENCIA_LABORAL();
                     oexperiencialaboral.EXPERIENCIA_ID = oexperiencia.EXPERIENCIA_ID;
-                    oexperiencialaboral.EMPRESA = oPostexperiencialaboral.EMPRESA;
-                    oexperiencialaboral.CARGO = oPostexperiencialaboral.CARGO;
-                    oexperiencialaboral.JEFE_INMEDIATO = oPostexperiencialaboral.JEFE_INMEDIATO;
-                    oexperiencialaboral.TELEFONO = oPostexperiencialaboral.TELEFONO;
-                    oexperiencialaboral.FECHA_INGRESO = oPostexperiencialaboral.FECHA_INGRESO;
-                    oexperiencialaboral.FECHA_CESE = oPostexperiencialaboral.FECHA_CESE;
-                    oexperiencialaboral.MOTIVO_CESE = oPostexperiencialaboral.MOTIVO_CESE;
+                    oexperiencialaboral.EMPRESA = oPostexperiencialaboral.empresa;
+                    oexperiencialaboral.CARGO = oPostexperiencialaboral.cargo;
+                    oexperiencialaboral.JEFE_INMEDIATO = oPostexperiencialaboral.jefe_inmediato;
+                    oexperiencialaboral.TELEFONO = oPostexperiencialaboral.telefono;
+                    oexperiencialaboral.FECHA_INGRESO = oPostexperiencialaboral.fecha_ingreso;
+                    oexperiencialaboral.FECHA_CESE = oPostexperiencialaboral.fecha_cese;
+                    oexperiencialaboral.MOTIVO_CESE = oPostexperiencialaboral.motivo_cese;
                     context2.EXPERIENCIA_LABORAL.Add(oexperiencialaboral);
                     context2.SaveChanges();
                 }
@@ -129,29 +133,41 @@ namespace SIGED_API.Controllers
 
                 COMPOSICION_FAMILIAR ocomposicionfamiliar= new COMPOSICION_FAMILIAR();
                 ocomposicionfamiliar.POSTULANTE_ID = ficha.postulante_id;
-                ocomposicionfamiliar.NOMBRE = ficha.NOMBRE;
-                ocomposicionfamiliar.APELLIDO_PATERNO = ficha.APELLIDO_PATERNO;
-                ocomposicionfamiliar.APELLIDO_MATERNO = ficha.APELLIDO_MATERNO;
-                ocomposicionfamiliar.DNI = ficha.DNI;
-                ocomposicionfamiliar.FECHA = ficha.FECHA;
-                ocomposicionfamiliar.EDAD = ficha.EDAD;
+                ocomposicionfamiliar.NOMBRE = ficha.nombre;
+                ocomposicionfamiliar.APELLIDO_PATERNO = ficha.apellido_paterno;
+                ocomposicionfamiliar.APELLIDO_MATERNO = ficha.apellido_materno;
+                ocomposicionfamiliar.DNI = ficha.dni;
+                ocomposicionfamiliar.FECHA = ficha.fecha;
+                ocomposicionfamiliar.EDAD = ficha.edad;
                 context2.COMPOSICION_FAMILIAR.Add(ocomposicionfamiliar);
                 context2.SaveChanges();
 
-                List<COMPOSICION_HIJO> composicionhijo = JsonConvert.DeserializeObject<List<COMPOSICION_HIJO>>(ficha.Hijos);
-                foreach (var oPostcomposicionhijo in composicionhijo)
+             
+                foreach (var oPostcomposicionhijo in ficha.Hijos)
                 {
                     COMPOSICION_HIJO ocomposicionhijo = new COMPOSICION_HIJO();
                     ocomposicionhijo.COMPOSICION_ID = ocomposicionfamiliar.COMPOSICION_ID;
-                    ocomposicionhijo.NOMBRE = oPostcomposicionhijo.NOMBRE;
-                    ocomposicionhijo.APELLIDO_PATERNO = oPostcomposicionhijo.APELLIDO_PATERNO;
-                    ocomposicionhijo.APELLIDO_MATERNO = oPostcomposicionhijo.APELLIDO_MATERNO;
-                    ocomposicionhijo.DNI = oPostcomposicionhijo.DNI;
-                    ocomposicionhijo.FECHA = oPostcomposicionhijo.FECHA;
-                    ocomposicionhijo.EDAD = oPostcomposicionhijo.EDAD;
+                    ocomposicionhijo.NOMBRE = oPostcomposicionhijo.nombre;
+                    ocomposicionhijo.APELLIDO_PATERNO = oPostcomposicionhijo.apellido_paterno;
+                    ocomposicionhijo.APELLIDO_MATERNO = oPostcomposicionhijo.apellido_materno;
+                    ocomposicionhijo.DNI = oPostcomposicionhijo.dni;
+                    ocomposicionhijo.FECHA = oPostcomposicionhijo.fecha;
+                    ocomposicionhijo.EDAD = oPostcomposicionhijo.edad;
                     context2.COMPOSICION_HIJO.Add(ocomposicionhijo);
                     context2.SaveChanges();
                 }
+
+                PAGO opago = new PAGO();
+                opago.POSTULANTE_ID = ficha.postulante_id;
+                opago.NRO_CUENTA = ficha.nro_cuenta;
+                opago.BANCO_ID = ficha.banco_id;
+                opago.CCI = ficha.cci;
+                opago.SISTEMA_PEN = ficha.sistema_pen;
+                opago.AFP_ID = ficha.afp_id;
+                opago.OTROS_BANCOS = ficha.otros_bancos;
+                context2.PAGO.Add(opago);
+                context2.SaveChanges();
+
                 return Ok();
 
             }

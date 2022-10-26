@@ -43,52 +43,52 @@ namespace SIGED_API.Controllers
         }
 
         // POST api/<AreaController>
-        [HttpPost]
-        public ActionResult Post([FromBody] Area area)
-        {
-            try
-            {
-                context.Area.Add(area);
-                context.SaveChanges();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest();
-            }
-        }
+        //[HttpPost]
+        //public ActionResult Post([FromBody] Area area)
+        //{
+        //    try
+        //    {
+        //        context.Area.Add(area);
+        //        context.SaveChanges();
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
 
         // PUT api/<AreaController>/5
-        [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] Area area)
-        {
-            if (area.area_id == id)
-            {
-                context.Entry(area).State = EntityState.Modified;
-                context.SaveChanges();
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+        //[HttpPut("{id}")]
+        //public ActionResult Put(int id, [FromBody] Area area)
+        //{
+        //    if (area.area_id == id)
+        //    {
+        //        context.Entry(area).State = EntityState.Modified;
+        //        context.SaveChanges();
+        //        return Ok();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
 
         // DELETE api/<AreaController>/5
-        [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
-        {
-            var area = context.Area.FirstOrDefault(p => p.area_id == id);
-            if (area != null)
-            {
-                context.Area.Remove(area);
-                context.SaveChanges();
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+        //[HttpDelete("{id}")]
+        //public ActionResult Delete(int id)
+        //{
+        //    var area = context.Area.FirstOrDefault(p => p.area_id == id);
+        //    if (area != null)
+        //    {
+        //        context.Area.Remove(area);
+        //        context.SaveChanges();
+        //        return Ok();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
     }
 }

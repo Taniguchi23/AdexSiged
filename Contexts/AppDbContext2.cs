@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Modelo = SIGED_API.Models.Modelo;
+using REPORTE = SIGED_API.Models.REPORTE;
 
 namespace SIGED_API.Contexts
 {
@@ -46,5 +47,22 @@ namespace SIGED_API.Contexts
 
         public DbSet<COMPOSICION_HIJO> COMPOSICION_HIJO { get; set; }
 
+        public DbSet<PAGO> PAGO { get; set; }
+
+
+        public DbSet<REPORTE> REPORTE { get; set; }
+
+        public DbSet<RUTINA1> RUTINA1 { get; set; }
+
+        public DbSet<RUTINA2> RUTINA2 { get; set; }
+
+        public DbSet<RUTINA3> RUTINA3 { get; set; }
+
+        public DbSet<RUTINA4> RUTINA4 { get; set; }
+
+
+        public DbSet<EVALUACION> EVALUACION { get; set; }
+
+        public DbSet<DETALLE_EVALUACION> DETALLE_EVALUACION { get; set; }
     }
 }

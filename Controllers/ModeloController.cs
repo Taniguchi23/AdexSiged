@@ -66,6 +66,9 @@ namespace SIGED_API.Controllers
                     ommodelo.Hora_final = modelo.Hora_final;
                     ommodelo.area_id = modelo.area_id;
                     ommodelo.tema = modelo.tema;
+                    //ommodelo.referencia = null;
+                    //ommodelo.apreciacion = modelo.apreciacion;
+                    //ommodelo.max_puntaje = modelo.max_puntaje;
                     context.Modelo.Add(ommodelo);
                     context.SaveChanges();
 

@@ -53,6 +53,7 @@ namespace SIGED_API.Controllers
         [HttpPost]
         public ActionResult Post([FromForm] ModeloDetalleRequest modelos)
         {
+
             try
             {
                 List<Rubrica_Modelo> rubricas = JsonConvert.DeserializeObject<List<Rubrica_Modelo>>(modelos.Rubricas_Modelo);

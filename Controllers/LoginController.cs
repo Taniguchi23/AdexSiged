@@ -47,18 +47,18 @@ namespace SIGED_API.Controllers
 
         // POST api/<LoginController>
         [HttpPost]
-        public bool Login(Login login)
+        public int Login(Login login)
         {
             
                 var post = context.Login.Where(p => p.correo == login.correo && p.contrasena == login.contrasena).FirstOrDefault();
 
                 if (post != null)
                 {
-                    return (true);
+                return post.postulante_id;
                 }
                 else 
                 {
-                    return false;
+                return 0;
                 }
             
             

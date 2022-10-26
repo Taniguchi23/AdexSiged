@@ -66,9 +66,9 @@ namespace SIGED_API.Contexts
 
         public DbSet<TIPOVIA> TIPOVIA { get; set; }
 
-        public DbSet<Pregrado> Pregrado { get; set; }
+        //public DbSet<Pregrado> Pregrado { get; set; }
 
-        public DbSet<Postgrado> Postgrado { get; set; }
+        //public DbSet<Postgrado> Postgrado { get; set; }
 
         public DbSet<Rubrica> Rubrica { get; set; }
 
@@ -77,5 +77,14 @@ namespace SIGED_API.Contexts
         public DbSet<GRADOACAD_POSTGRADO> GRADOACAD_POSTGRADO { get; set; }
 
         public DbSet<AFP> AFP { get; set; }
+
+
+        public DbSet<RUTINA> RUTINA { get; set; }
+
+        public DbSet<REPORTE> REPORTE { get; set; }
+
+        public DbSet<ESTADOCIVIL> ESTADOCIVIL { get; set; }
+
+        public DbSet<BANCO> BANCO { get; set; }
     }
 }
