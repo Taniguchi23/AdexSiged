@@ -11,8 +11,7 @@ namespace SIGED_API.Models
         [Key]
         public int modelo_id { get; set; }
         
-
-        public string Rubricas_Modelo { get; set; }
+        public List<Rubrica_Modelo> Rubricas_Modelo { get; set; }
         public class Rubrica_Modelo
         {
             public int rubrica_mod_id { get; set; }
@@ -20,7 +19,8 @@ namespace SIGED_API.Models
             public int modelo_id { get; set; }
             public int puntaje { get; set; }
         }
-        public string Fortalezas { get; set; }
+
+        public List<Fortaleza> Fortalezas { get; set; }
 
         public class Fortaleza
         {
@@ -31,7 +31,7 @@ namespace SIGED_API.Models
             public string descripcion { get; set; }
         }
 
-        public string Oportunidades { get; set; }
+        public List<Oportunidad> Oportunidades { get; set; }
 
         public class Oportunidad
         {
@@ -57,8 +57,8 @@ namespace SIGED_API.Models
 
         public int max_puntaje { get; set; }
 
-        [NotMapped]
-        public IFormFile FrontImage { get; set; }
+        //[NotMapped]
+        //public IFormFile FrontImage { get; set; }
 
     }
 }

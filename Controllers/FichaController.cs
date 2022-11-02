@@ -184,9 +184,9 @@ namespace SIGED_API.Controllers
         }
 
         // DELETE api/<FichaController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

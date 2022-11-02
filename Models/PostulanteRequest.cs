@@ -23,23 +23,22 @@ namespace SIGED_API.Models
         public string contrasena { get; set; }
         public string rep_contrasena { get; set; }
 
-        public string imageurl { get; set; }
+        //public string imageurl { get; set; }
 
-        public string archivocv { get; set; }
+        //public string archivocv { get; set; }
 
-        [NotMapped]
-        public IFormFile FrontImage { get; set; }
+        //[NotMapped]
+        //public IFormFile FrontImage { get; set; }
 
-        [NotMapped]
-        public IFormFile FrontArchivo { get; set; }
+        //[NotMapped]
+        //public IFormFile FrontArchivo { get; set; }
 
 
-        public string Especialidades { get; set; }
-
+        public List<Especialidad_postulante> Especialidades { get; set; }
         public class Especialidad_postulante
         {
             public int especialidad_id { get; set; }
-            public int postulante_id { get; set; }
+            //public int postulante_id { get; set; }
         }
     }
 }

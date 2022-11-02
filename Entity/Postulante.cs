@@ -26,11 +26,11 @@ namespace SIGED_API.Entity
 
         public string archivocv { get; set; }
 
-        [NotMapped]
-        public IFormFile FrontImage { get; set; }
+        //[NotMapped]
+        //public IFormFile FrontImage { get; set; }
 
-        [NotMapped]
-        public IFormFile FrontArchivo{ get; set; }
+        //[NotMapped]
+        //public IFormFile FrontArchivo{ get; set; }
 
 
         //public List<Especialidad_postulante> Especialidades { get; set; }

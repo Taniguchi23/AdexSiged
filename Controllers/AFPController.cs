@@ -10,11 +10,11 @@ namespace SIGED_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AFPController : ControllerBase
+    public class AfpController : ControllerBase
     {
         private readonly AppDbContext context;
 
-        public AFPController(AppDbContext context)
+        public AfpController(AppDbContext context)
         //public PostulanteController(AppDbContext context)
         {
             this.context = context;

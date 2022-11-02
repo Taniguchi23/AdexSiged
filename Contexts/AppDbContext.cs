@@ -86,5 +86,7 @@ namespace SIGED_API.Contexts
         public DbSet<ESTADOCIVIL> ESTADOCIVIL { get; set; }
 
         public DbSet<BANCO> BANCO { get; set; }
+
+        public DbSet<TEMPORAL_IMAGEN> TEMPORAL_IMAGEN { get; set; }
     }
 }

@@ -68,5 +68,8 @@ namespace SIGED_API.Contexts
         public DbSet<NOTIFICACION> NOTIFICACION { get; set; }
 
         public DbSet<PROGRAMACION> PROGRAMACION { get; set; }
+
+
+        public DbSet<TEMPORAL_IMAGEN> TEMPORAL_IMAGEN { get; set; }
     }
 }
