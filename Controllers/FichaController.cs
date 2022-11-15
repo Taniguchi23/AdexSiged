@@ -174,6 +174,7 @@ namespace SIGED_API.Controllers
             catch (Exception ex)
             {
                 return Ok("Failed");
+
             }
         }
 
