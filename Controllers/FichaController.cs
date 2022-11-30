@@ -113,6 +113,7 @@ namespace SIGED_API.Controllers
                 oexperiencia.POSTULANTE_ID = ficha.postulante_id;
                 context2.EXPERIENCIA.Add(oexperiencia);
                 context2.SaveChanges();
+                 
 
            
                 foreach (var oPostexperiencialaboral in ficha.Experiencia)
