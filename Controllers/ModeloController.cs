@@ -79,26 +79,26 @@ namespace SIGED_API.Controllers
         }
 
         // PUT api/<ModeloController>/5
-        [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromForm] Modelo modelo)
-        {
-            if (modelo.modelo_id == id)
-            {
+        //[HttpPut("{id}")]
+        //public ActionResult Put(int id, [FromForm] Modelo modelo)
+        //{
+        //    if (modelo.modelo_id == id)
+        //    {
                 
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
+        //        return Ok();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
 
-        }
+        //}
 
-        // DELETE api/<ModeloController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// DELETE api/<ModeloController>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
 
      
     }

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Ronald\\ADEX\\SIIGED\\siged-backend\\SIGED-API.csproj": {}
+    "C:\\Ronald\\ADEX\\SIGED-API.csproj": {}
   },
   "projects": {
-    "C:\\Ronald\\ADEX\\SIIGED\\siged-backend\\SIGED-API.csproj": {
+    "C:\\Ronald\\ADEX\\SIGED-API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Ronald\\ADEX\\SIIGED\\siged-backend\\SIGED-API.csproj",
+        "projectUniqueName": "C:\\Ronald\\ADEX\\SIGED-API.csproj",
         "projectName": "SIGED-API",
-        "projectPath": "C:\\Ronald\\ADEX\\SIIGED\\siged-backend\\SIGED-API.csproj",
-        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "C:\\Ronald\\ADEX\\SIIGED\\siged-backend\\obj\\",
+        "projectPath": "C:\\Ronald\\ADEX\\SIGED-API.csproj",
+        "packagesPath": "C:\\Users\\ronal\\.nuget\\packages\\",
+        "outputPath": "C:\\Ronald\\ADEX\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ronal\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -44,6 +44,10 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[3.1.31, )"
+            },
             "Microsoft.AspNetCore.Hosting": {
               "target": "Package",
               "version": "[2.2.7, )"
@@ -69,6 +73,10 @@
             "System.Configuration.ConfigurationManager": {
               "target": "Package",
               "version": "[6.0.1, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.25.1, )"
             }
           },
           "imports": [
@@ -77,8 +85,7 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -90,7 +97,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     }

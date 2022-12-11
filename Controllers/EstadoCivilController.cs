@@ -28,6 +28,7 @@ namespace SIGED_API.Controllers
 
         }
 
+
         // GET api/<EstadoCivilController>/5
         //[HttpGet("{id}")]
         //public string Get(int id)

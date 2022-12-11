@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGED_API.Contexts;
 using SIGED_API.Entity;
+using SIGED_API.Models.Request;
+using SIGED_API.Models.Response;
+using SIGED_API.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,24 +20,32 @@ namespace SIGED_API.Controllers
 
         private readonly AppDbContext context;
 
-        public LoginController(AppDbContext context)
+        private IUserService _userService;
+
+        //public LoginController(AppDbContext context)
+        //{
+        //    this.context = context;
+        //}
+
+        public LoginController(IUserService userService)
         {
-            this.context = context;
+            _userService = userService;
         }
+
         // GET: api/<LoginController>
-        [HttpGet]
+        //[HttpGet]
         //public IEnumerable<string> Get()
         //{
         //    return new string[] { "value1", "value2" };
         //}
 
         // GET api/<LoginController>/5
-        [HttpGet("{correo}/{contrasena}")]
-        public IEnumerable<Postulante> GetAll(string correo, string contrasena)
-        {
-            return context.Postulante.Where(p => p.correo == correo && p.contrasena == contrasena);
+        //[HttpGet("{correo}/{contrasena}")]
+        //public IEnumerable<Postulante> GetAll(string correo, string contrasena)
+        //{
+        //    return context.Postulante.Where(p => p.correo == correo && p.contrasena == contrasena);
   
-        }
+        //}
 
         //[HttpGet("{id}")]
         //public Postulante Get(int id)
@@ -46,34 +57,63 @@ namespace SIGED_API.Controllers
 
 
         // POST api/<LoginController>
-        [HttpPost]
-        public int Login(Login login)
-        {
+        //[HttpPost]
+        //public int Login(Login login)
+        //{
             
-                var post = context.Login.Where(p => p.correo == login.correo && p.contrasena == login.contrasena).FirstOrDefault();
+        //        var post = context.Login.Where(p => p.correo == login.correo && p.contrasena == login.contrasena).FirstOrDefault();
 
-                if (post != null)
-                {
-                return post.postulante_id;
-                }
-                else 
-                {
-                return 0;
-                }
+        //        if (post != null)
+        //        {
+        //        return post.postulante_id;
+        //        }
+        //        else 
+        //        {
+        //        return 0;
+        //        }
             
             
+        //}
+
+        [HttpPost("login")]
+        public IActionResult Autentificar([FromBody] Login login)
+        {
+
+            Respuesta respuesta = new Respuesta();
+
+            var userresponse = _userService.Auth(login);
+
+
+            if (userresponse == null)
+            {
+
+                respuesta.Exito = 0;
+                respuesta.Mensaje = "Usuario o constrasena incorrecta";
+                return BadRequest(respuesta);
+            }
+
+            respuesta.Exito = 1;
+
+            respuesta.Data = userresponse;
+
+            return Ok(respuesta);
+
+
+
+
         }
+
 
         // PUT api/<LoginController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
-        // DELETE api/<LoginController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// DELETE api/<LoginController>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

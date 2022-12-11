@@ -44,11 +44,11 @@ namespace SIGED_API.Controllers
         }
 
         // GET api/<DetalleModeloController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
         // POST api/<DetalleModeloController>
         [HttpPost]

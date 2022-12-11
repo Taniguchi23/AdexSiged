@@ -9,6 +9,9 @@ namespace SIGED_API.Contexts
 {
     public class AppDbContext:DbContext
     {
+        //public AppDbContext()
+        //{
+        //}
 
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
         {
