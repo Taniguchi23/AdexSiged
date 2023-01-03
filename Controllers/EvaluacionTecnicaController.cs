@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SIGED_API.Contexts;
 using SIGED_API.Entity;
@@ -12,6 +13,7 @@ namespace SIGED_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EvaluacionTecnicaController : ControllerBase
     {
         private readonly AppDbContext context;

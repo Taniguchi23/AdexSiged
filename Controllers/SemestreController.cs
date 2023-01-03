@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SIGED_API.Contexts;
 using SIGED_API.Entity;
@@ -13,6 +14,7 @@ namespace SIGED_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SemestreController : ControllerBase
     {
         private readonly AppDbContext context;

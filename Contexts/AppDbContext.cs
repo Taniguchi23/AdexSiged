@@ -91,5 +91,8 @@ namespace SIGED_API.Contexts
         public DbSet<BANCO> BANCO { get; set; }
 
         public DbSet<TEMPORAL_IMAGEN> TEMPORAL_IMAGEN { get; set; }
+
+        public DbSet<ROL> ROL { get; set; }
+
     }
 }

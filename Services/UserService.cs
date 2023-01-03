@@ -39,8 +39,14 @@ namespace SIGED_API.Services
 
                 if (usuario == null) return null;
 
-                     userresponse.Email = usuario.correo;
-                     userresponse.Token = GetToken(usuario);
+                    userresponse.usuario = usuario.correo;
+                    userresponse.token = GetToken(usuario);
+                    userresponse.Rol = "Postulante";
+                    userresponse.mensaje = "Usuario Correcto";
+                    userresponse.nombre = usuario.nombre + " " + usuario.ape_paterno + " " + usuario.ape_materno;
+                    userresponse.postulante_id = usuario.postulante_id;
+            //usuario.postulante_id
+
 
 
 

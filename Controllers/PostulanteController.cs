@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using SIGED_API.Models;
 using Newtonsoft.Json;
 using Postulante = SIGED_API.Entity.Postulante;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,6 +24,7 @@ namespace SIGED_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PostulanteController : ControllerBase
     {
         private readonly AppDbContext context;

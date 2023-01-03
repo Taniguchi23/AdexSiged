@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SIGED_API.Contexts;
 using SIGED_API.Entity;
 using SIGED_API.Models;
@@ -13,6 +14,7 @@ namespace SIGED_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RevisionCVController : ControllerBase
     {
         private readonly AppDbContext context;

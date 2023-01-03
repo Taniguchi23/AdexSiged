@@ -9,8 +9,11 @@ namespace SIGED_API.Entity
     public class Login
     {
         [Key]
-        public int postulante_id { get; set; }
+        //public int postulante_id { get; set; }
         public string correo   { get; set; }
         public string contrasena { get; set; }
+
+
+
     }
 }
