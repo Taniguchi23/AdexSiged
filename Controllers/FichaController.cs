@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/ficha")]
     [ApiController]
     [Authorize]
     public class FichaController : ControllerBase

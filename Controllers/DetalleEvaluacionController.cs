@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/detalleevaluacion")]
     [ApiController]
     [Authorize]
     public class DetalleEvaluacionController : ControllerBase

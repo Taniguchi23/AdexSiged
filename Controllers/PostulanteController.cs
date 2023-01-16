@@ -16,24 +16,27 @@ using System.Threading.Tasks;
 using SIGED_API.Models;
 using Newtonsoft.Json;
 using Postulante = SIGED_API.Entity.Postulante;
+
 using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/postulante")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class PostulanteController : ControllerBase
     {
         private readonly AppDbContext context;
+
         private readonly ILogger<PostulanteController> logger;
         private readonly IWebHostEnvironment webHostEnviroment;
         public PostulanteController(AppDbContext context, ILogger<PostulanteController> logger, IWebHostEnvironment webHost)
         //public PostulanteController(AppDbContext context)
         {
             this.context = context;
+
             webHostEnviroment = webHost;
         }
 
@@ -58,7 +61,42 @@ namespace SIGED_API.Controllers
         public Postulante Get(int id)
         {
 
-            var postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
+            
+            Postulante postulante = new Postulante();
+
+            postulante = context.Seleccion_cabecera.Join(context.Postulante,
+               sd => sd.postulante_id,
+               r => r.postulante_id,
+               (sd, r) => new { sd, r }
+               ).Where(c => c.sd.postulante_id == id)
+               .Select(res => new Postulante()
+               {
+                   postulante_id = res.r.postulante_id,
+                   nombre = res.r.nombre,
+                   ape_paterno = res.r.ape_paterno,
+                   ape_materno = res.r.ape_materno,
+                   tipo_id = res.r.tipo_id,
+                   numero = res.r.numero,
+                   fec_nacimiento = res.r.fec_nacimiento,
+                   celular = res.r.celular,
+                   contrasena = res.r.contrasena,
+                   rep_contrasena = res.r.rep_contrasena,
+                   imageurl = res.r.imageurl,
+                   archivocv = res.r.archivocv,
+                   rol_id = res.r.rol_id,
+                   seleccion_id = res.sd.seleccion_id,
+                   estado = res.r.estado
+
+               }).FirstOrDefault();
+
+            if (postulante == null)
+            {
+                 postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
+
+
+            }
+                    
+
             return postulante;
         }
 
@@ -110,12 +148,14 @@ namespace SIGED_API.Controllers
                 opostulante.nombre = postulante.nombre;
                 opostulante.ape_paterno = postulante.ape_paterno;
                 opostulante.ape_materno = postulante.ape_materno;
-                opostulante.dni = postulante.dni;
+                opostulante.tipo_id = postulante.tipo_id;
+                opostulante.numero = postulante.numero;
                 opostulante.fec_nacimiento = postulante.fec_nacimiento;
                 opostulante.celular = postulante.celular;
                 opostulante.correo = postulante.correo;
                 opostulante.contrasena = postulante.contrasena;
                 opostulante.rep_contrasena = postulante.rep_contrasena;
+                opostulante.rol_id = 4;
 
                 if (temporal_imagen != null)
                 {
@@ -168,29 +208,44 @@ namespace SIGED_API.Controllers
                         context.SaveChanges();
                     }
 
-                return Ok("Success");
+                var result = new OkObjectResult(new { message = "OK",  status = true , postulante_id = opostulante.postulante_id});
+                return result;
 
             }
             catch (Exception ex)
             {
-                return Ok("Failed");
+                return BadRequest();
             }
         }
 
         [HttpPost("AdjuntarImagen/{id}")]
-        public ActionResult PostImagen([FromForm] TemporalRequest temporal)
+        public ActionResult PostImagen([FromForm] TemporalRequest temporal, int id)
         {
             try
             {
                 TEMPORAL_IMAGEN opostulante = new TEMPORAL_IMAGEN();
-                string uniqueFileName = UploadedFilePostulante(temporal);
+                string uniqueFileName = UploadedImagePostulante(temporal);
                 opostulante.archivo = uniqueFileName;
                 opostulante.descripcion = uniqueFileName;
                 opostulante.tipoarchivo = 1;
                 opostulante.modulo = 1;
                 context.TEMPORAL_IMAGEN.Add(opostulante);
                 context.SaveChanges();
-                return Ok();
+
+                if (id > 0)
+                {
+                    
+                    var postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
+                   
+                    postulante.imageurl = uniqueFileName;
+                    context.Entry(postulante).State = EntityState.Modified;
+                    context.SaveChanges();
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
             catch (Exception ex)
             {
@@ -200,7 +255,7 @@ namespace SIGED_API.Controllers
 
 
         [HttpPost("AdjuntarArchivo/{id}")]
-        public ActionResult PostARchivo([FromForm] TemporalRequest temporal)
+        public ActionResult PostARchivo([FromForm] TemporalRequest temporal, int id)
         {
             try
             {
@@ -212,7 +267,21 @@ namespace SIGED_API.Controllers
                 opostulante.modulo = 1;
                 context.TEMPORAL_IMAGEN.Add(opostulante);
                 context.SaveChanges();
-                return Ok();
+                //return Ok();
+
+
+                if (id > 0)
+                {
+                    var postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
+                    postulante.archivocv = uniqueFileName;
+                    context.Entry(postulante).State = EntityState.Modified;
+                    context.SaveChanges();
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
             catch (Exception ex)
             {
@@ -223,62 +292,93 @@ namespace SIGED_API.Controllers
 
 
         // PUT api/<PostulanteController>/5
-        [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] Postulante postulante)
+        [HttpPut()]
+        public ActionResult Put([FromBody] PostulanteRequest postulante)
         {
-            if (postulante.postulante_id == id)
-            {
-                context.Entry(postulante).State = EntityState.Modified;
-                context.SaveChanges();
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
+
+            
+                
+                    //    var temporal_imagen = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 1);
+
+                    //var temporal_archivo = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 2 & p.modulo == 1);
+
+                    Postulante opostulante = new Postulante();
+                     opostulante.postulante_id = postulante.postulante_id;
+                     opostulante.nombre = postulante.nombre;
+                    opostulante.ape_paterno = postulante.ape_paterno;
+                    opostulante.ape_materno = postulante.ape_materno;
+                    opostulante.tipo_id = postulante.tipo_id;
+                    opostulante.numero = postulante.numero;
+                    opostulante.fec_nacimiento = postulante.fec_nacimiento;
+                    opostulante.celular = postulante.celular;
+                    opostulante.correo = postulante.correo;
+                    opostulante.contrasena = postulante.contrasena;
+                    opostulante.rep_contrasena = postulante.rep_contrasena;
+                    opostulante.estado = postulante.estado;
+                    context.Entry(opostulante).State = EntityState.Modified;
+                    context.SaveChanges();
+                    
+
+
+                foreach (var oPostEspecialidade in postulante.Especialidades)
+                    {
+                        var especialidad = context.Especialidad_postulante.FirstOrDefault(p => p.postulante_id == postulante.postulante_id & p.especialidad_id == oPostEspecialidade.especialidad_id);
+
+                        Especialidad_postulante oespecialidad = new Especialidad_postulante();
+
+                        if (especialidad != null)
+                        {
+                            oespecialidad.especialidad_post_id = especialidad.especialidad_post_id;
+                            context.Especialidad_postulante.Remove(especialidad);
+                            context.SaveChanges();
+                        }
+
+                        oespecialidad.especialidad_post_id = 0;
+                        oespecialidad.postulante_id = opostulante.postulante_id;
+                        oespecialidad.especialidad_id = oPostEspecialidade.especialidad_id;
+                        context.Especialidad_postulante.Add(oespecialidad);
+                        context.SaveChanges();
+                    }
+
+                    var result = new OkObjectResult(new { message = "OK", status = true, postulante_id = opostulante.postulante_id });
+                    return result;
+                //}
+          
+            //if (postulante.postulante_id == id)
+            //{
+            //    context.Entry(postulante).State = EntityState.Modified;
+            //    context.SaveChanges();
+            //    return Ok();
+            //}
+            //else
+            //{
+            //    return BadRequest();
+            //}
         }
 
-        //private string UploadedFileImage(Postulante postulante)
-        //{
-        //    string uniqueFileName = null;
-        //    if (postulante.celular != null)
-        //    {
-        //        string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "images");
-        //        uniqueFileName = Guid.NewGuid().ToString() + "_" + postulante.FrontImage.FileName;
-        //        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            postulante.FrontImage.CopyTo(fileStream);
-        //        }
+        private string UploadedImagePostulante(TemporalRequest temporal)
+        {
+            string uniqueFileName = null;
+            if (temporal.FrontArchivo != null)
+            {
+                string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "images");
+                uniqueFileName = temporal.FrontArchivo.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    temporal.FrontArchivo.CopyTo(fileStream);
+                }
 
-        //    }
-        //    return uniqueFileName;
-        //}
-
-        //private string UploadedFile(Postulante postulante)
-        //{
-        //    string uniqueFileName = null;
-        //    if (postulante.celular != null)
-        //    {
-        //        string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "files");
-        //        uniqueFileName = Guid.NewGuid().ToString() + "_" + postulante.FrontArchivo.FileName;
-        //        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            postulante.FrontImage.CopyTo(fileStream);
-        //        }
-
-        //    }
-        //    return uniqueFileName;
-        //}
-
+            }
+            return uniqueFileName;
+        }
 
         private string UploadedFilePostulante(TemporalRequest temporal)
         {
             string uniqueFileName = null;
             if (temporal.FrontArchivo != null)
             {
-                string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "images");
+                string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "files");
                 uniqueFileName =  temporal.FrontArchivo.FileName;
                 string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))

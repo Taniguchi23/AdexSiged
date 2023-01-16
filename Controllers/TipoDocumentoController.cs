@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using SIGED_API.Contexts;
 using SIGED_API.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,48 +10,58 @@ using System.Linq;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/estadocivil")]
+    [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    public class EstadoCivilController : ControllerBase
+    public class TipoDocumentoController : ControllerBase
     {
         private readonly AppDbContext context;
 
-        public EstadoCivilController(AppDbContext context)
+
+        private readonly IWebHostEnvironment webHostEnviroment;
+        public TipoDocumentoController(AppDbContext context,  IWebHostEnvironment webHost)
         //public PostulanteController(AppDbContext context)
         {
             this.context = context;
+
+            webHostEnviroment = webHost;
         }
-        // GET: api/<EstadoCivilController>
+
+
+        // GET: api/<TipoDocumentoController>
         [HttpGet]
-        public IEnumerable<ESTADOCIVIL> Get()
+        public IEnumerable<TIPO_DOCUMENTO> Get()
         {
-
-            return context.ESTADOCIVIL.ToList();
-
+            try
+            {
+                return context.TIPO_DOCUMENTO.ToList();
+            }
+            catch (Exception ex)
+            {
+                
+                throw;
+            }
         }
 
-
-        // GET api/<EstadoCivilController>/5
+        // GET api/<TipoDocumentoController>/5
         //[HttpGet("{id}")]
         //public string Get(int id)
         //{
         //    return "value";
         //}
 
-        // POST api/<EstadoCivilController>
+        //// POST api/<TipoDocumentoController>
         //[HttpPost]
         //public void Post([FromBody] string value)
         //{
         //}
 
-        // PUT api/<EstadoCivilController>/5
+        //// PUT api/<TipoDocumentoController>/5
         //[HttpPut("{id}")]
         //public void Put(int id, [FromBody] string value)
         //{
         //}
 
-        // DELETE api/<EstadoCivilController>/5
+        //// DELETE api/<TipoDocumentoController>/5
         //[HttpDelete("{id}")]
         //public void Delete(int id)
         //{

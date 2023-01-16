@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/revisioncv")]
     [ApiController]
     [Authorize]
     public class RevisionCVController : ControllerBase
@@ -34,9 +34,10 @@ namespace SIGED_API.Controllers
 
         // GET api/<RevisionCVController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Revision Get(int id)
         {
-            return "value";
+            var revision = context.RevisionCV.FirstOrDefault(p => p.revision_id == id);
+            return revision;
         }
 
         // POST api/<RevisionCVController>
@@ -69,7 +70,8 @@ namespace SIGED_API.Controllers
                 oseleccion_detalle.revision_id = orevision.revision_id;
                 context.Seleccion_detalle.Add(oseleccion_detalle);
                 context.SaveChanges();
-                return Ok("Success");
+                var result = new OkObjectResult(new { message = "OK", status = true });
+                return result;
             }
             catch (Exception ex)
             {

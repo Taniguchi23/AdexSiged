@@ -19,6 +19,8 @@ namespace SIGED_API.Contexts
 
         public DbSet<Postulante> Postulante { get; set; }
 
+ 
+
         public DbSet<Area> Area { get; set; }
 
         public DbSet<Area_interes> Area_interes { get; set; }
@@ -93,6 +95,8 @@ namespace SIGED_API.Contexts
         public DbSet<TEMPORAL_IMAGEN> TEMPORAL_IMAGEN { get; set; }
 
         public DbSet<ROL> ROL { get; set; }
+
+        public DbSet<TIPO_DOCUMENTO> TIPO_DOCUMENTO { get; set; }
 
     }
 }

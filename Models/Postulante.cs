@@ -73,5 +73,8 @@ namespace SIGED_API.Models
         public bool certificado { get; set; }
 
         public string num_certificado { get; set; }
+
+
+        //public int seleccion_id { get; set; }
     }
 }

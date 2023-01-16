@@ -16,7 +16,7 @@ using Modelo = SIGED_API.Models.Modelo;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/detallemodelo")]
     [ApiController]
     [Authorize]
     public class DetalleModeloController : ControllerBase

@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/habilidad")]
     [ApiController]
     [Authorize]
     public class HabilidadController : ControllerBase

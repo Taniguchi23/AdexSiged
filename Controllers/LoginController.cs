@@ -19,7 +19,7 @@ using WinAuthentication.Authentication.Windows;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/login")]
     [ApiController]
     //[Authorize]
     public class LoginController : ControllerBase

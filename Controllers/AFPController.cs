@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/afp")]
     [ApiController]
     [Authorize]
     public class AfpController : ControllerBase

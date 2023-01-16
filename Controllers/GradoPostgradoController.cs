@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/postgrado")]
     [ApiController]
     [Authorize]
     public class GradoPostgradoController : ControllerBase

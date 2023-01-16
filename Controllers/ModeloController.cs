@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/modelo")]
     [ApiController]
     [Authorize]
     public class ModeloController : ControllerBase

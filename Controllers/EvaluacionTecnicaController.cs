@@ -6,12 +6,13 @@ using SIGED_API.Entity;
 using SIGED_API.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/evaluaciontecnica")]
     [ApiController]
     [Authorize]
     public class EvaluacionTecnicaController : ControllerBase
@@ -24,16 +25,17 @@ namespace SIGED_API.Controllers
         }
         // GET: api/<EvaluacionTecnicaController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<E_Tecnica> Get()
         {
-            return new string[] { "value1", "value2" };
+            return context.E_Tecnica.ToList();
         }
 
         // GET api/<EvaluacionTecnicaController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public E_Tecnica Get(int id)
         {
-            return "value";
+            var tecnica = context.E_Tecnica.FirstOrDefault(p => p.e_tecnica_id == id);
+            return tecnica;
         }
 
         // POST api/<EvaluacionTecnicaController>
@@ -67,7 +69,8 @@ namespace SIGED_API.Controllers
                 oseleccion_detalle.e_tecnica_id = otecnica.e_tecnica_id;
                 context.Seleccion_detalle.Add(oseleccion_detalle);
                 context.SaveChanges();
-                return Ok("Success");
+                var result = new OkObjectResult(new { message = "OK", status = true });
+                return result;
             }
             catch (Exception ex)
             {

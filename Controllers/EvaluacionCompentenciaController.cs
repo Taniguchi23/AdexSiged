@@ -5,19 +5,20 @@ using SIGED_API.Entity;
 using SIGED_API.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/evaluacioncompetencia")]
     [ApiController]
     [Authorize]
-    public class Evaluacion_CompentenciaController : ControllerBase
+    public class EvaluacionCompentenciaController : ControllerBase
     {
         private readonly AppDbContext context;
 
-        public Evaluacion_CompentenciaController(AppDbContext context)
+        public EvaluacionCompentenciaController(AppDbContext context)
         //public PostulanteController(AppDbContext context)
         {
             this.context = context;
@@ -25,16 +26,17 @@ namespace SIGED_API.Controllers
 
         // GET: api/<Evaluacion_CompentenciaController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<E_Competencia> Get()
         {
-            return new string[] { "value1", "value2" };
+            return context.E_Competencia.ToList();
         }
 
         // GET api/<Evaluacion_CompentenciaController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public E_Competencia Get(int id)
         {
-            return "value";
+            var competencia = context.E_Competencia.FirstOrDefault(p => p.e_competencia_id == id);
+            return competencia;
         }
 
         // POST api/<Evaluacion_CompentenciaController>
@@ -85,7 +87,8 @@ namespace SIGED_API.Controllers
                     context.SaveChanges();
                 }
 
-                return Ok("Success");
+                var result = new OkObjectResult(new { message = "OK", status = true });
+                return result;
             }
             catch (Exception ex)
             {

@@ -14,6 +14,6 @@ namespace SIGED_API.Models
 
         public E_JefeAcademico E_JefeAcademico { get; set; }
 
-        public RequestCompetencia E_Competenciab { get; set; }
+        //public RequestCompetencia E_Competenciab { get; set; }
     }
 }

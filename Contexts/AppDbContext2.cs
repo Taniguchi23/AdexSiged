@@ -17,6 +17,7 @@ namespace SIGED_API.Contexts
         {
         }
 
+
         public DbSet<Rubrica_Modelo> Rubrica_Modelo { get; set; }
 
         public DbSet<Fortaleza> Fortaleza { get; set; }

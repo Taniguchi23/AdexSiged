@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/especialidad")]
     [ApiController]
     //[Authorize]
     public class EspecialidadController : ControllerBase

@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/evaluacion")]
     [ApiController]
     [Authorize]
     public class EvaluacionController : ControllerBase

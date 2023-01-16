@@ -16,7 +16,7 @@ using static SIGED_API.Models.RequestCompetencia;
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/seleccion")]
     [ApiController]
     [Authorize]
     public class SeleccionController : ControllerBase
@@ -124,7 +124,7 @@ namespace SIGED_API.Controllers
             return postulante;
         }
 
-        [HttpGet("GetSeleccionbyCode/{id}")]
+        [HttpGet("detalleseleccion/{id}")]
         public SeleccionInformacion GetSeleccionbyCode(int id)
         {
             SeleccionInformacion Objseleccion = new SeleccionInformacion();
@@ -138,8 +138,22 @@ namespace SIGED_API.Controllers
                 ).Where(c => c.sd.seleccion_id == id)
                 .Select(res => new Revision()
                  {
+                    revision_id = res.r.revision_id,
                     fecha_rev = res.r.fecha_rev,
-                    seleccion_c1 = res.r.seleccion_c1
+                    seleccion_c1 = res.r.seleccion_c1,
+                    seleccion_c2 = res.r.seleccion_c2,
+                    seleccion_c3 = res.r.seleccion_c3,
+                    seleccion_c4 = res.r.seleccion_c4,
+                    seleccion_c5 = res.r.seleccion_c5,
+                    seleccion_c6 = res.r.seleccion_c6,
+                    comentario_1 = res.r.comentario_1,
+                    comentario_2 = res.r.comentario_2,
+                    comentario_3 = res.r.comentario_3,
+                    comentario_4 = res.r.comentario_4,
+                    comentario_5 = res.r.comentario_5,
+                    comentario_6 = res.r.comentario_6,
+                    observacion = res.r.observacion,
+                    estado = res.r.estado
 
                 }).FirstOrDefault();
 
@@ -154,8 +168,28 @@ namespace SIGED_API.Controllers
                ).Where(c => c.sd.seleccion_id == id)
                .Select(res => new E_Competencia()
                {
+                   e_competencia_id = res.r.e_competencia_id,
                    fecha = res.r.fecha,
-                   comentario_1 = res.r.comentario_1
+                   comentario_1 = res.r.comentario_1,
+                   comentario_2 = res.r.comentario_2,
+                   comentario_3 = res.r.comentario_3,
+                   comentario_4 = res.r.comentario_4,
+                   comentario_5 = res.r.comentario_5,
+                   comentario_6 = res.r.comentario_6,
+                   comentario_7 = res.r.comentario_7,
+                   comentario_8 = res.r.comentario_8,
+                   comentario_9 = res.r.comentario_9,
+                   comentario_10 = res.r.comentario_10,
+                   comentario_11 = res.r.comentario_11,
+                   comentario_12 = res.r.comentario_12,
+                   comentario_13 = res.r.comentario_13,
+                   comentario_14 = res.r.comentario_14,
+                   comentario_15 = res.r.comentario_15,
+                   comentario_16 = res.r.comentario_16,
+                   comentario_17 = res.r.comentario_17,
+                   comentario_18 = res.r.comentario_18,
+                   comentario_19 = res.r.comentario_19,
+                   comentario_20 = res.r.comentario_20
 
                }).FirstOrDefault();
 
@@ -188,8 +222,22 @@ namespace SIGED_API.Controllers
                ).Where(c => c.sd.seleccion_id == id)
                .Select(res => new E_Tecnica()
                {
+                   e_tecnica_id = res.r.e_tecnica_id,
                    fecha = res.r.fecha,
-                   comentario_1 = res.r.comentario_1
+                   comentario_1 = res.r.comentario_1,
+                   comentario_2 = res.r.comentario_2,
+                   comentario_3 = res.r.comentario_3,
+                   comentario_4 = res.r.comentario_4,
+                   comentario_5 = res.r.comentario_5,
+                   comentario_6 = res.r.comentario_6,
+                   comentario_7 = res.r.comentario_7,
+                   comentario_8 = res.r.comentario_8,
+                   comentario_10 = res.r.comentario_10,
+                   comentario_11 = res.r.comentario_11,
+                   apreciacion = res.r.apreciacion,
+                   id_hora_pedagogica = res.r.id_hora_pedagogica,
+                   observacion = res.r.observacion,
+                   estado = res.r.estado
 
                }).FirstOrDefault();
 
@@ -205,8 +253,13 @@ namespace SIGED_API.Controllers
                ).Where(c => c.sd.seleccion_id == id)
                .Select(res => new E_JefeAcademico()
                {
+                   entrevistaja_id = res.r.entrevistaja_id,
                    fecha = res.r.fecha,
-                   apreciacion = res.r.apreciacion
+                   apreciacion = res.r.apreciacion,
+                   id_hora_pedagogica = res.r.id_hora_pedagogica,
+                   observacion = res.r.observacion,
+                   id_cargo = res.r.id_cargo,
+                   estado = res.r.estado
 
                }).FirstOrDefault();
 
@@ -216,7 +269,7 @@ namespace SIGED_API.Controllers
 
         }
 
-        [HttpGet("GetSeleccionbyParameter/{idpostulante}/{idsemestre}/{idarea}")]
+        [HttpGet("traerseleccion/{idpostulante}/{idsemestre}/{idarea}")]
         public Seleccion GetSeleccionbyParameter(int idpostulante, int idsemestre, int idarea)
         {
             var postulante = context.Seleccion_cabecera.FirstOrDefault(p => p.postulante_id == idpostulante || p.semestre_id == idsemestre || p.area_id == idarea);

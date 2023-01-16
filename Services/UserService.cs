@@ -41,6 +41,7 @@ namespace SIGED_API.Services
 
                     userresponse.usuario = usuario.correo;
                     userresponse.token = GetToken(usuario);
+                    userresponse.rol_id = usuario.rol_id;
                     userresponse.Rol = "Postulante";
                     userresponse.mensaje = "Usuario Correcto";
                     userresponse.nombre = usuario.nombre + " " + usuario.ape_paterno + " " + usuario.ape_materno;

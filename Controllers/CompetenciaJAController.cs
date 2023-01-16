@@ -5,12 +5,13 @@ using SIGED_API.Entity;
 using SIGED_API.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SIGED_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/competenciaja")]
     [ApiController]
     [Authorize]
     public class CompetenciaJAController : ControllerBase
@@ -23,18 +24,19 @@ namespace SIGED_API.Controllers
         }
 
         // GET: api/<CompetenciaJAController>
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
+        [HttpGet]
+        public IEnumerable<E_JefeAcademico> Get()
+        {
+            return context.E_JefeAcademico.ToList();
+        }
 
-        //// GET api/<CompetenciaJAController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        // GET api/<CompetenciaJAController>/5
+        [HttpGet("{id}")]
+        public E_JefeAcademico Get(int id)
+        {
+            var jefeacademico = context.E_JefeAcademico.FirstOrDefault(p => p.entrevistaja_id == id);
+            return jefeacademico;
+        }
 
         // POST api/<CompetenciaJAController>
         [HttpPost]
@@ -57,7 +59,8 @@ namespace SIGED_API.Controllers
                 oseleccion_detalle.entrevistaja_id = ojefeacedemico.entrevistaja_id;
                 context.Seleccion_detalle.Add(oseleccion_detalle);
                 context.SaveChanges();
-                return Ok("Success");
+                var result = new OkObjectResult(new { message = "OK", status = true });
+                return result;
             }
             catch (Exception ex)
             {
