@@ -33,7 +33,7 @@ namespace SIGED_API.Controllers
         {
             try
             {
-                return context.TIPO_DOCUMENTO.ToList();
+                return context.TIPO_DOCUMENTO.ToList().Where((c => c.estado == true));
             }
             catch (Exception ex)
             {

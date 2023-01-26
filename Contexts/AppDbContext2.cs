@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Modelo = SIGED_API.Models.Modelo;
+using Postulante = SIGED_API.Entity.Postulante;
 using REPORTE = SIGED_API.Models.REPORTE;
 
 namespace SIGED_API.Contexts
@@ -17,6 +18,7 @@ namespace SIGED_API.Contexts
         {
         }
 
+        public DbSet<Postulante> Postulante { get; set; }
 
         public DbSet<Rubrica_Modelo> Rubrica_Modelo { get; set; }
 

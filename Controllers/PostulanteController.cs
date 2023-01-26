@@ -29,14 +29,14 @@ namespace SIGED_API.Controllers
     public class PostulanteController : ControllerBase
     {
         private readonly AppDbContext context;
-
+        private readonly AppDbContext2 context2;
         private readonly ILogger<PostulanteController> logger;
         private readonly IWebHostEnvironment webHostEnviroment;
-        public PostulanteController(AppDbContext context, ILogger<PostulanteController> logger, IWebHostEnvironment webHost)
+        public PostulanteController(AppDbContext context, AppDbContext2 context2, ILogger<PostulanteController> logger, IWebHostEnvironment webHost)
         //public PostulanteController(AppDbContext context)
         {
             this.context = context;
-
+            this.context2 = context2;
             webHostEnviroment = webHost;
         }
 
@@ -296,15 +296,17 @@ namespace SIGED_API.Controllers
         public ActionResult Put([FromBody] PostulanteRequest postulante)
         {
 
-            
-                
-                    //    var temporal_imagen = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 1);
 
-                    //var temporal_archivo = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 2 & p.modulo == 1);
+
+            //    var temporal_imagen = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 1);
+
+            //var temporal_archivo = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 2 & p.modulo == 1);
+
+            var postulantereque = context2.Postulante.FirstOrDefault(p => p.postulante_id == postulante.postulante_id);
 
                     Postulante opostulante = new Postulante();
-                     opostulante.postulante_id = postulante.postulante_id;
-                     opostulante.nombre = postulante.nombre;
+                    opostulante.postulante_id = postulante.postulante_id;
+                    opostulante.nombre = postulante.nombre;
                     opostulante.ape_paterno = postulante.ape_paterno;
                     opostulante.ape_materno = postulante.ape_materno;
                     opostulante.tipo_id = postulante.tipo_id;
@@ -315,24 +317,33 @@ namespace SIGED_API.Controllers
                     opostulante.contrasena = postulante.contrasena;
                     opostulante.rep_contrasena = postulante.rep_contrasena;
                     opostulante.estado = postulante.estado;
-                    context.Entry(opostulante).State = EntityState.Modified;
+                    opostulante.imageurl = postulantereque.imageurl;
+                    opostulante.archivocv = postulantereque.archivocv;
+                    opostulante.rol_id = postulantereque.rol_id;
+                    opostulante.seleccion_id = postulantereque.seleccion_id;
+                     context.Entry(opostulante).State = EntityState.Modified;
                     context.SaveChanges();
-                    
 
+            var especialidad = context.Especialidad_postulante.ToList().Where((c => c.postulante_id == postulante.postulante_id));
+
+            Especialidad_postulante oespecialidad = new Especialidad_postulante();
+
+                if (especialidad != null)
+                {
+
+                foreach (var especialidadespostulante in especialidad)
+                {
+
+                    var especialidadespecial = context.Especialidad_postulante.FirstOrDefault(p => p.especialidad_post_id == especialidadespostulante.especialidad_post_id);
+                    //oespecialidad.especialidad_post_id = especialidadespostulante.especialidad_post_id;
+                    context.Especialidad_postulante.Remove(especialidadespecial);
+                    context.SaveChanges();
+                }
 
                 foreach (var oPostEspecialidade in postulante.Especialidades)
                     {
-                        var especialidad = context.Especialidad_postulante.FirstOrDefault(p => p.postulante_id == postulante.postulante_id & p.especialidad_id == oPostEspecialidade.especialidad_id);
-
-                        Especialidad_postulante oespecialidad = new Especialidad_postulante();
-
-                        if (especialidad != null)
-                        {
-                            oespecialidad.especialidad_post_id = especialidad.especialidad_post_id;
-                            context.Especialidad_postulante.Remove(especialidad);
-                            context.SaveChanges();
-                        }
-
+                       
+                
                         oespecialidad.especialidad_post_id = 0;
                         oespecialidad.postulante_id = opostulante.postulante_id;
                         oespecialidad.especialidad_id = oPostEspecialidade.especialidad_id;
@@ -340,10 +351,10 @@ namespace SIGED_API.Controllers
                         context.SaveChanges();
                     }
 
-                    var result = new OkObjectResult(new { message = "OK", status = true, postulante_id = opostulante.postulante_id });
-                    return result;
-                //}
-          
+                  
+                }
+            var result = new OkObjectResult(new { message = "OK", status = true, postulante_id = opostulante.postulante_id });
+            return result;
             //if (postulante.postulante_id == id)
             //{
             //    context.Entry(postulante).State = EntityState.Modified;
