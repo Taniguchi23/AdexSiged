@@ -302,6 +302,8 @@ namespace SIGED_API.Controllers
 
             //var temporal_archivo = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 2 & p.modulo == 1);
 
+
+            ////////
             var postulantereque = context2.Postulante.FirstOrDefault(p => p.postulante_id == postulante.postulante_id);
 
                     Postulante opostulante = new Postulante();
