@@ -343,7 +343,6 @@ namespace SIGED_API.Controllers
                 foreach (var oPostEspecialidade in postulante.Especialidades)
                     {
                        
-                
                         oespecialidad.especialidad_post_id = 0;
                         oespecialidad.postulante_id = opostulante.postulante_id;
                         oespecialidad.especialidad_id = oPostEspecialidade.especialidad_id;
