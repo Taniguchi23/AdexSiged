@@ -216,3 +216,12 @@ C:\Ronald\ADEX\obj\Debug\net5.0\SIGED-API.genruntimeconfig.cache
 C:\Ronald\ADEX\obj\Debug\net5.0\ref\SIGED-API.dll
 C:\Ronald\ADEX\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Ronald\ADEX\bin\Debug\net5.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Ronald\ADEX\bin\Debug\net5.0\MailKit.dll
+C:\Ronald\ADEX\bin\Debug\net5.0\MimeKit.dll
+C:\Ronald\ADEX\bin\Debug\net5.0\BouncyCastle.Crypto.dll
+C:\Ronald\ADEX\bin\Debug\net5.0\System.Formats.Asn1.dll
+C:\Ronald\ADEX\bin\Debug\net5.0\System.Runtime.CompilerServices.Unsafe.dll
+C:\Ronald\ADEX\bin\Debug\net5.0\System.Security.Cryptography.Pkcs.dll
+C:\Ronald\ADEX\bin\Debug\net5.0\System.Text.Encoding.CodePages.dll
+C:\Ronald\ADEX\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.1\System.Security.Cryptography.Pkcs.dll
+C:\Ronald\ADEX\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.1\System.Text.Encoding.CodePages.dll
