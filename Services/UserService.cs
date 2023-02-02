@@ -59,6 +59,37 @@ namespace SIGED_API.Services
             
         }
 
+
+        public UserResponse Authadmin(Login login)
+        {
+
+            UserResponse userresponse = new UserResponse();
+
+            //using (var db = new AppDbContext())
+            //{
+            //string scontrasena = Encrypt.GetSHA256(model.constrasena);
+
+          
+
+            //userresponse.usuario = usuario.correo;
+            userresponse.token = GetTokenAdmin(login);
+            //userresponse.rol_id = usuario.rol_id;
+            //userresponse.Rol = "Postulante";
+            //userresponse.mensaje = "Usuario Correcto";
+            //userresponse.nombre = usuario.nombre + " " + usuario.ape_paterno + " " + usuario.ape_materno;
+            //userresponse.postulante_id = usuario.postulante_id;
+            //usuario.postulante_id
+
+
+
+
+
+            //}
+
+            return userresponse;
+
+
+        }
         private string GetToken(Postulante login)
         {
             var toknHandler = new JwtSecurityTokenHandler();
@@ -72,6 +103,34 @@ namespace SIGED_API.Services
                     new Claim[]
                     {
                         new Claim(ClaimTypes.NameIdentifier, login.postulante_id.ToString()),
+                        new Claim(ClaimTypes.Email, login.correo)
+                    }
+                    ),
+                Expires = DateTime.UtcNow.AddDays(60),
+                SigningCredentials =
+                    new SigningCredentials(new SymmetricSecurityKey(llave), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = toknHandler.CreateToken(tokenDescriptor);
+
+            return toknHandler.WriteToken(token);
+
+
+        }
+
+        private string GetTokenAdmin(Login login)
+        {
+            var toknHandler = new JwtSecurityTokenHandler();
+
+            var llave = Encoding.ASCII.GetBytes(_appSettings.Secreto);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+
+                Subject = new ClaimsIdentity(
+                    new Claim[]
+                    {
+                        //new Claim(ClaimTypes.NameIdentifier, login.postulante_id.ToString()),
                         new Claim(ClaimTypes.Email, login.correo)
                     }
                     ),

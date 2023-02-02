@@ -7,13 +7,13 @@ namespace SIGED_API.Entity
     {
 
         [Key]
-        public int notificacion_id { get; set; }
+        //public int notificacion_id { get; set; }
 
         public int postulante_id { get; set; }
 
-        public int fecha { get; set; }
+        //public int fecha { get; set; }
 
-        public bool estado { get; set; }
+        //public bool estado { get; set; }
 
     }
 }

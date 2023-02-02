@@ -44,31 +44,31 @@ namespace SIGED_API.Controllers
         //}
 
         // POST api/<NotificacionController>
-        [HttpPost]
-        public int GrabarReporte([FromBody] NOTIFICACION notificacion)
-        {
+        //[HttpPost]
+        //public int GrabarReporte([FromBody] NOTIFICACION notificacion)
+        //{
 
-            var vnotificacion = context.NOTIFICACION.FirstOrDefault(p => p.postulante_id == notificacion.postulante_id);
+        //    var vnotificacion = context.NOTIFICACION.FirstOrDefault(p => p.postulante_id == notificacion.postulante_id);
 
-            if (vnotificacion != null)
-            {
-                return vnotificacion.notificacion_id;
-            }
-            else
-            {
-                NOTIFICACION oreporte = new NOTIFICACION();
-                oreporte.fecha = notificacion.fecha;
-                oreporte.postulante_id = notificacion.postulante_id;
-                oreporte.fecha = notificacion.fecha;
-                oreporte.estado = notificacion.estado;
-                context.NOTIFICACION.Add(oreporte);
-                context.SaveChanges();
+        //    if (vnotificacion != null)
+        //    {
+        //        return vnotificacion.notificacion_id;
+        //    }
+        //    else
+        //    {
+        //        NOTIFICACION oreporte = new NOTIFICACION();
+        //        oreporte.fecha = notificacion.fecha;
+        //        oreporte.postulante_id = notificacion.postulante_id;
+        //        oreporte.fecha = notificacion.fecha;
+        //        oreporte.estado = notificacion.estado;
+        //        context.NOTIFICACION.Add(oreporte);
+        //        context.SaveChanges();
 
-                return oreporte.notificacion_id;
-            }
+        //        return oreporte.notificacion_id;
+        //    }
 
 
-        }
+        //}
 
 
         //[HttpPost("EnviarNotificacion/{id}")]
@@ -78,15 +78,19 @@ namespace SIGED_API.Controllers
         //    return "value";
         //}
 
-        [HttpPost("EnviarNotificacion/{id}")]
+        [HttpPost("EnviarNotificacion")]
         public string Notificar([FromBody] NOTIFICACION notificacion)
         {
+            var vnotificacion = context.ENVIAR_CORREO.FirstOrDefault(p => p.envio_id == 1);
+
+            var vpostulante = context.Postulante.FirstOrDefault(p => p.postulante_id == notificacion.postulante_id);
+
             var email = new MimeMessage();
 
-                email.From.Add(MailboxAddress.Parse("ronald.livia@outlook.com"));
-            email.To.Add(MailboxAddress.Parse("miguelkillki@gmail.com"));
-            email.Subject = "Test Email Subject";
-            email.Body = new TextPart(TextFormat.Html) { Text = "<h1>HOLA</h1>" };
+            email.From.Add(MailboxAddress.Parse(vnotificacion.destinatario));
+            email.To.Add(MailboxAddress.Parse(vpostulante.correo));
+            email.Subject = vnotificacion.asunto;
+            email.Body = new TextPart(TextFormat.Html) { Text = vnotificacion.mensaje };
         
             using  var smtp = new MailKit.Net.Smtp.SmtpClient();
             smtp.Connect("smtp.office365.com", 587, MailKit.Security.SecureSocketOptions.StartTls);

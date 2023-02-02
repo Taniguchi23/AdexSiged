@@ -97,6 +97,6 @@ namespace SIGED_API.Contexts
         public DbSet<ROL> ROL { get; set; }
 
         public DbSet<TIPO_DOCUMENTO> TIPO_DOCUMENTO { get; set; }
-
+        
     }
 }

@@ -105,12 +105,14 @@ namespace SIGED_API.Controllers
 
                     UserResponse userrequest = new UserResponse();
 
+                    var userresponseadmin = _userService.Authadmin(login);
+
                     userrequest.nombre = roles.fullname;
                     userrequest.usuario = login.correo;
                     userrequest.rol_id = roles.rol;
                     userrequest.Rol = roles.descripcion;
                     userrequest.mensaje = roles.message;
-                    userrequest.token = roles.token;
+                    userrequest.token = userresponseadmin.token;
 
                     if (roles.status is true)
                     {

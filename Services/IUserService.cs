@@ -7,5 +7,7 @@ namespace SIGED_API.Services
     public interface IUserService
     {
         UserResponse Auth(Login login);
+
+        UserResponse Authadmin(Login login);
     }
 }

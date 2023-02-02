@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>SIGED_API</RootNamespace>
+	
+
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,8 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="images\" />
+    <Folder Include="Entity\Ficha\" />
     <Folder Include="files\" />
+    <Folder Include="images\ficha\" />
   </ItemGroup>
 
 </Project>

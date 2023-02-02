@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +40,7 @@ namespace SIGED_API
             //services.AddCors();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings")));
             services.AddDbContext<AppDbContext2>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings")));
-
+            services.AddDbContext<AppDbContext3>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings")));
 
             services.AddControllers();
 
@@ -72,7 +73,10 @@ namespace SIGED_API
                 });
 
             services.AddScoped<IUserService, UserService>();
-
+            services.AddSwaggerGen(options =>
+            {
+                options.CustomSchemaIds(type => type.ToString());
+            });
 
             services.AddSwaggerGen(c =>
             {

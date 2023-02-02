@@ -66,7 +66,7 @@ namespace SIGED_API.Controllers
 
             postulante = context.Seleccion_cabecera.Join(context.Postulante,
                sd => sd.postulante_id,
-               r => r.postulante_id,
+               r => r.postulante_id,    
                (sd, r) => new { sd, r }
                ).Where(c => c.sd.postulante_id == id)
                .Select(res => new Postulante()
@@ -304,7 +304,7 @@ namespace SIGED_API.Controllers
 
 
             ////////
-            var postulantereque = context2.Postulante.FirstOrDefault(p => p.postulante_id == postulante.postulante_id);
+            var postulantereque = context.Postulante.FirstOrDefault(p => p.postulante_id == postulante.postulante_id);
 
                     Postulante opostulante = new Postulante();
                     opostulante.postulante_id = postulante.postulante_id;

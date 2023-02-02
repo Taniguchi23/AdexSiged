@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Ronald\\ADEX\\SIGED-API.csproj": {}
+    "C:\\Ronald\\ADEX\\Web\\SIGED-API.csproj": {}
   },
   "projects": {
-    "C:\\Ronald\\ADEX\\SIGED-API.csproj": {
+    "C:\\Ronald\\ADEX\\Web\\SIGED-API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Ronald\\ADEX\\SIGED-API.csproj",
+        "projectUniqueName": "C:\\Ronald\\ADEX\\Web\\SIGED-API.csproj",
         "projectName": "SIGED-API",
-        "projectPath": "C:\\Ronald\\ADEX\\SIGED-API.csproj",
-        "packagesPath": "C:\\Users\\ronal\\.nuget\\packages\\",
-        "outputPath": "C:\\Ronald\\ADEX\\obj\\",
+        "projectPath": "C:\\Ronald\\ADEX\\Web\\SIGED-API.csproj",
+        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
+        "outputPath": "C:\\Ronald\\ADEX\\Web\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\ronal\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -89,7 +85,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -101,7 +98,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.308\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

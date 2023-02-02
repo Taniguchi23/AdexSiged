@@ -74,5 +74,7 @@ namespace SIGED_API.Contexts
 
 
         public DbSet<TEMPORAL_IMAGEN> TEMPORAL_IMAGEN { get; set; }
+
+        public DbSet<ENVIAR_CORREO> ENVIAR_CORREO { get; set; }
     }
 }

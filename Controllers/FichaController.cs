@@ -2,12 +2,20 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SIGED_API.Contexts;
-using SIGED_API.Entity;
-using SIGED_API.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Logging;
+using SIGED_API.Ficha;
+using SIGED_API.Models;
+using Postulante = SIGED_API.Ficha.Postulante;
+using SIGED_API.Entity;
+using System.Threading.Tasks;
+using System.IO;
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,33 +23,45 @@ namespace SIGED_API.Controllers
 {
     [Route("api/ficha")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class FichaController : ControllerBase
     {
 
-        private readonly AppDbContext2 context2;
+        private readonly AppDbContext3 context3;
         private readonly IWebHostEnvironment webHostEnviroment;
+        private readonly ILogger<FichaController> logger;
 
-        public FichaController(AppDbContext2 context2, IWebHostEnvironment webHost)
+        public FichaController(AppDbContext3 context3, IWebHostEnvironment webHost)
         {
-            this.context2 = context2;
+            this.context3 = context3;
             webHostEnviroment = webHost;
         }
         // GET: api/<FichaController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Postulante> GetFicha()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                return context3.Postulante.ToList();
+                //return Postulante();
+            }
+            catch (Exception ex)
+            {
+                logger.LogInformation("Error" + ex.Message);
+                throw;
+            }
         }
 
         // GET api/<FichaController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Postulante Get(int id)
         {
-            return "value";
+          
+
+           return  context3.Postulante.FirstOrDefault(p => p.postulante_id == id);
         }
 
-        // POST api/<FichaController>
+        //POST api/<FichaController>
         [HttpPost]
         public ActionResult Post([FromBody] FichaDatosRequest ficha)
         {
@@ -52,8 +72,8 @@ namespace SIGED_API.Controllers
                 oestudio.postulante_id = ficha.postulante_id;
                 oestudio.otros = ficha.otros;
                 oestudio.otros = ficha.otros_programas;
-                context2.Estudio_Realizado.Add(oestudio);
-                context2.SaveChanges();
+                context3.Estudio_Realizado.Add(oestudio);
+                context3.SaveChanges();
 
 
                 foreach (var opregrados in ficha.Pregrados)
@@ -65,8 +85,8 @@ namespace SIGED_API.Controllers
                     opregrado.grado_acad = opregrados.grado_acad;
                     opregrado.fecha_ingreso = opregrados.fecha_ingreso;
                     opregrado.fecha_salida = opregrados.fecha_salida;
-                    context2.Pregrado.Add(opregrado);
-                    context2.SaveChanges();
+                    context3.Pregrado.Add(opregrado);
+                    context3.SaveChanges();
                 }
 
 
@@ -79,8 +99,8 @@ namespace SIGED_API.Controllers
                     opostgrado.nivel = opostgrados.nivel;
                     opostgrado.fecha_ingreso = opostgrados.fecha_ingreso;
                     opostgrado.fecha_salida = opostgrados.fecha_salida;
-                    context2.Postgrado.Add(opostgrado);
-                    context2.SaveChanges();
+                    context3.Postgrado.Add(opostgrado);
+                    context3.SaveChanges();
                 }
 
 
@@ -92,32 +112,32 @@ namespace SIGED_API.Controllers
                     oingles.ESTUDIO_ID = oestudio.estudio_id;
                     oingles.IDIOMA_ID = oPostingles.idioma_id;
                     oingles.NIVELESTUDIO_ID = oPostingles.nivel_ingles_id;
-                    context2.NIVEL_INGLES.Add(oingles);
-                    context2.SaveChanges();
+                    context3.NIVEL_INGLES.Add(oingles);
+                    context3.SaveChanges();
                 }
 
 
 
 
-         
+
                 foreach (var oPostofimatica in ficha.Ofimatica)
                 {
                     NIVEL_OFIMATICA oofimatica = new NIVEL_OFIMATICA();
                     oofimatica.ESTUDIO_ID = oestudio.estudio_id;
                     oofimatica.OFIMATICA_ID = oPostofimatica.ofimatica_id;
                     oofimatica.NIVELESTUDIO_ID = oPostofimatica.nivel_ofimatica_id;
-                    context2.NIVEL_OFIMATICA.Add(oofimatica);
-                    context2.SaveChanges();
+                    context3.NIVEL_OFIMATICA.Add(oofimatica);
+                    context3.SaveChanges();
                 }
 
 
                 EXPERIENCIA oexperiencia = new EXPERIENCIA();
                 oexperiencia.POSTULANTE_ID = ficha.postulante_id;
-                context2.EXPERIENCIA.Add(oexperiencia);
-                context2.SaveChanges();
-                 
+                context3.EXPERIENCIA.Add(oexperiencia);
+                context3.SaveChanges();
 
-           
+
+
                 foreach (var oPostexperiencialaboral in ficha.Experiencia)
                 {
                     EXPERIENCIA_LABORAL oexperiencialaboral = new EXPERIENCIA_LABORAL();
@@ -129,12 +149,12 @@ namespace SIGED_API.Controllers
                     oexperiencialaboral.FECHA_INGRESO = oPostexperiencialaboral.fecha_ingreso;
                     oexperiencialaboral.FECHA_CESE = oPostexperiencialaboral.fecha_cese;
                     oexperiencialaboral.MOTIVO_CESE = oPostexperiencialaboral.motivo_cese;
-                    context2.EXPERIENCIA_LABORAL.Add(oexperiencialaboral);
-                    context2.SaveChanges();
+                    context3.EXPERIENCIA_LABORAL.Add(oexperiencialaboral);
+                    context3.SaveChanges();
                 }
 
 
-                COMPOSICION_FAMILIAR ocomposicionfamiliar= new COMPOSICION_FAMILIAR();
+                COMPOSICION_FAMILIAR ocomposicionfamiliar = new COMPOSICION_FAMILIAR();
                 ocomposicionfamiliar.POSTULANTE_ID = ficha.postulante_id;
                 ocomposicionfamiliar.NOMBRE = ficha.nombre;
                 ocomposicionfamiliar.APELLIDO_PATERNO = ficha.apellido_paterno;
@@ -142,10 +162,10 @@ namespace SIGED_API.Controllers
                 ocomposicionfamiliar.DNI = ficha.dni;
                 ocomposicionfamiliar.FECHA = ficha.fecha;
                 ocomposicionfamiliar.EDAD = ficha.edad;
-                context2.COMPOSICION_FAMILIAR.Add(ocomposicionfamiliar);
-                context2.SaveChanges();
+                context3.COMPOSICION_FAMILIAR.Add(ocomposicionfamiliar);
+                context3.SaveChanges();
 
-             
+
                 foreach (var oPostcomposicionhijo in ficha.Hijos)
                 {
                     COMPOSICION_HIJO ocomposicionhijo = new COMPOSICION_HIJO();
@@ -156,8 +176,8 @@ namespace SIGED_API.Controllers
                     ocomposicionhijo.DNI = oPostcomposicionhijo.dni;
                     ocomposicionhijo.FECHA = oPostcomposicionhijo.fecha;
                     ocomposicionhijo.EDAD = oPostcomposicionhijo.edad;
-                    context2.COMPOSICION_HIJO.Add(ocomposicionhijo);
-                    context2.SaveChanges();
+                    context3.COMPOSICION_HIJO.Add(ocomposicionhijo);
+                    context3.SaveChanges();
                 }
 
                 PAGO opago = new PAGO();
@@ -168,8 +188,8 @@ namespace SIGED_API.Controllers
                 opago.SISTEMA_PEN = ficha.sistema_pen;
                 opago.AFP_ID = ficha.afp_id;
                 opago.OTROS_BANCOS = ficha.otros_bancos;
-                context2.PAGO.Add(opago);
-                context2.SaveChanges();
+                context3.PAGO.Add(opago);
+                context3.SaveChanges();
 
                 return Ok();
 
@@ -178,6 +198,76 @@ namespace SIGED_API.Controllers
             {
                 return Ok("Failed");
 
+            }
+        }
+
+        [HttpGet("TraerImagen/{id}")]
+        public async Task<IActionResult> GetImage([FromRoute] int id)
+        {
+
+            var postulante = context3.DECLARACION_JURADA.FirstOrDefault(p => p.postulante_id == id);
+
+            string path = webHostEnviroment.ContentRootPath + "\\images\\ficha\\";
+            var filePath = path + postulante.firma;
+            if (System.IO.File.Exists(filePath))
+            {
+                byte[] b = System.IO.File.ReadAllBytes(filePath);
+                return File(b, "image/png");
+            }
+            return null;
+        }
+
+        private string UploadedImagePostulante(TemporalRequest temporal)
+        {
+            string uniqueFileName = null;
+            if (temporal.FrontArchivo != null)
+            {
+                string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "images\\ficha");
+                uniqueFileName = temporal.FrontArchivo.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    temporal.FrontArchivo.CopyTo(fileStream);
+                }
+
+            }
+            return uniqueFileName;
+        }
+
+        [HttpPost("AdjuntarImagen/{id}")]
+        public ActionResult PostImagen([FromForm] TemporalRequest temporal, int id)
+        {
+            try
+            {
+                TEMPORAL_IMAGEN opostulante = new TEMPORAL_IMAGEN();
+                string uniqueFileName = UploadedImagePostulante(temporal);
+                opostulante.archivo = uniqueFileName;
+                opostulante.descripcion = uniqueFileName;
+                opostulante.tipoarchivo = 1;
+                opostulante.modulo = 2;
+                context3.TEMPORAL_IMAGEN.Add(opostulante);
+                context3.SaveChanges();
+
+                if (id > 0)
+                {
+
+                    var postulante = context3.DECLARACION_JURADA.FirstOrDefault(p => p.postulante_id == id);
+                    postulante.postulante_id= id;   
+                    postulante.firma = uniqueFileName;
+                    context3.Entry(postulante).State = EntityState.Modified;
+                    context3.SaveChanges();
+                   
+                }
+                //else
+                //{
+                //    return BadRequest();
+                //}
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
             }
         }
 
