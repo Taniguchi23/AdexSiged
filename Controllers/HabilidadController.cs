@@ -32,6 +32,7 @@ namespace SIGED_API.Controllers
         }
 
 
+
         // GET api/<HabilidadController>/5
         [HttpGet("{id}")]
         public Habilidad Get(int id)
@@ -40,6 +41,29 @@ namespace SIGED_API.Controllers
             return area;
         }
 
+        [HttpGet("TraerHabilidadxCompetencia/{id}")]
+        public IEnumerable<E_Habilidad_Competencia> GetEspecialidadbyPostulante(int id)
+        {
+
+            var postulante = context.E_Competencia.
+                Join(context.E_Habilidad_Competencia,
+                p => p.e_competencia_id,
+                ai => ai.e_competencia_i,
+                (p, ai) => new { p, ai }
+                
+                ).Where(c => c.ai.e_competencia_i == id)
+                .Select(res => new E_Habilidad_Competencia()
+                {
+                    id_detalle_e_h_competencia = res.ai.id_detalle_e_h_competencia,
+                    e_competencia_i = res.ai.e_competencia_i,
+                    id_habilidad = res.ai.id_habilidad,
+                    id_valoracion = res.ai.id_valoracion
+
+                }).ToList();
+
+            return postulante;
+
+        }
         // POST api/<HabilidadController>
         //[HttpPost]
         //public void Post([FromBody] string value)
