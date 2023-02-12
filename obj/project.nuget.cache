@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "A5pRBSihAjb6eQ0IqwmBf31eW3mQpXIIpZkC1b//ReMG2VT2j9BrKdyda6zWv403ND6Pk08KeL/AzugEF2ZmsA==",
+  "dgSpecHash": "rBDj1uxB6Y0AxMJc80n1/5el58Cna/BKOtXCUi+u0ls5vrbv3HxjptQvj4L6rl5PHdxfSDDmzriymuvAvDadSQ==",
   "success": true,
-  "projectFilePath": "C:\\Ronald\\ADEX\\Web\\SIGED-API.csproj",
+  "projectFilePath": "C:\\Ronald\\ADEX\\Web - copia\\SIGED-API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\DELL\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\mailkit\\3.5.0\\mailkit.3.5.0.nupkg.sha512",

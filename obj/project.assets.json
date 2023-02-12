@@ -7305,11 +7305,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Ronald\\ADEX\\Web\\SIGED-API.csproj",
+      "projectUniqueName": "C:\\Ronald\\ADEX\\Web - copia\\SIGED-API.csproj",
       "projectName": "SIGED-API",
-      "projectPath": "C:\\Ronald\\ADEX\\Web\\SIGED-API.csproj",
+      "projectPath": "C:\\Ronald\\ADEX\\Web - copia\\SIGED-API.csproj",
       "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-      "outputPath": "C:\\Ronald\\ADEX\\Web\\obj\\",
+      "outputPath": "C:\\Ronald\\ADEX\\Web - copia\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
