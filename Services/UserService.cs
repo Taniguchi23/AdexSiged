@@ -28,14 +28,8 @@ namespace SIGED_API.Services
         {
 
             UserResponse userresponse =  new UserResponse();
-
-            //using (var db = new AppDbContext())
-            //{
-                //string scontrasena = Encrypt.GetSHA256(model.constrasena);
-
-                string scontrasena = (login.contrasena);
-
-                var usuario = context.Login.Where(d => d.correo == login.correo && d.contrasena == scontrasena).FirstOrDefault();
+            string scontrasena = Encrypt.GetSHA256(login.contrasena);
+            var usuario = context.Login.Where(d => d.correo == login.correo && d.contrasena == scontrasena).FirstOrDefault();
 
                 if (usuario == null) return null;
 
@@ -46,13 +40,6 @@ namespace SIGED_API.Services
                     userresponse.mensaje = "Usuario Correcto";
                     userresponse.nombre = usuario.nombre + " " + usuario.ape_paterno + " " + usuario.ape_materno;
                     userresponse.postulante_id = usuario.postulante_id;
-            //usuario.postulante_id
-
-
-
-
-
-            //}
 
             return userresponse;
 

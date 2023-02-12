@@ -25,13 +25,16 @@ namespace SIGED_API.Models
         public string contrasena { get; set; }
         public string rep_contrasena { get; set; }
 
+        public int rol_id { get; set; }
+
+        public int seleccion_id { get; set; }
+
+
+        public string imageurl { get; set; }
+
+        public string archivocv { get; set; }
+
         public string estado { get; set; }
-
-     
-
-        //public string imageurl { get; set; }
-
-        //public string archivocv { get; set; }
 
         //[NotMapped]
         //public IFormFile FrontImage { get; set; }

@@ -232,6 +232,7 @@ namespace SIGED_API.Controllers
                    comentario_6 = res.r.comentario_6,
                    comentario_7 = res.r.comentario_7,
                    comentario_8 = res.r.comentario_8,
+                   comentario_9 = res.r.comentario_9,
                    comentario_10 = res.r.comentario_10,
                    comentario_11 = res.r.comentario_11,
                    apreciacion = res.r.apreciacion,
@@ -295,9 +296,7 @@ namespace SIGED_API.Controllers
                     context.SaveChanges();
                     return seleccion.seleccion_id;
                 }
-                
-
-                //return Ok();
+               
                 
             }
             catch (Exception ex)

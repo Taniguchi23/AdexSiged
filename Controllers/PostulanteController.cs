@@ -16,8 +16,9 @@ using System.Threading.Tasks;
 using SIGED_API.Models;
 using Newtonsoft.Json;
 using Postulante = SIGED_API.Entity.Postulante;
-
+using Postulantes = SIGED_API.Models.Postulante;
 using Microsoft.AspNetCore.Authorization;
+using SIGED_API.Tools;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -79,12 +80,13 @@ namespace SIGED_API.Controllers
                    numero = res.r.numero,
                    fec_nacimiento = res.r.fec_nacimiento,
                    celular = res.r.celular,
-                   contrasena = res.r.contrasena,
-                   rep_contrasena = res.r.rep_contrasena,
+                   contrasena = Encrypt.GetSHA256(res.r.contrasena),
+                   rep_contrasena = Encrypt.GetSHA256(res.r.rep_contrasena),
                    imageurl = res.r.imageurl,
                    archivocv = res.r.archivocv,
                    rol_id = res.r.rol_id,
                    seleccion_id = res.sd.seleccion_id,
+                   correo= res.r.correo,
                    estado = res.r.estado
 
                }).FirstOrDefault();
@@ -137,10 +139,39 @@ namespace SIGED_API.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] PostulanteRequest postulante)
         {
+            var result = new OkObjectResult(0);
             try
             {
 
-                var temporal_imagen = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 1);
+                List<Postulante> postulanteList = new List<Postulante>();
+
+                postulanteList = context.Postulante.ToList();
+
+                bool valorcorreo, valornumero;
+
+
+                valorcorreo = Validarcorreo(postulante.correo, postulanteList);
+                valornumero = Validarnumero(postulante.numero, postulanteList);
+
+
+                if (valorcorreo == false)
+                {
+
+                    result = new OkObjectResult(new { message = "Ya existe correo", status = false });
+
+                }
+
+                else if (valornumero == false)
+                {
+
+                    result = new OkObjectResult(new { message = "Ya existe numero", status = false });
+
+                }
+
+                else
+                {
+
+                    var temporal_imagen = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 1);
 
                 var temporal_archivo = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 2 & p.modulo == 1);
 
@@ -153,8 +184,8 @@ namespace SIGED_API.Controllers
                 opostulante.fec_nacimiento = postulante.fec_nacimiento;
                 opostulante.celular = postulante.celular;
                 opostulante.correo = postulante.correo;
-                opostulante.contrasena = postulante.contrasena;
-                opostulante.rep_contrasena = postulante.rep_contrasena;
+                opostulante.contrasena = Encrypt.GetSHA256(postulante.contrasena);
+                opostulante.rep_contrasena = Encrypt.GetSHA256(postulante.rep_contrasena);
                 opostulante.rol_id = 4;
 
                 if (temporal_imagen != null)
@@ -208,7 +239,9 @@ namespace SIGED_API.Controllers
                         context.SaveChanges();
                     }
 
-                var result = new OkObjectResult(new { message = "OK",  status = true , postulante_id = opostulante.postulante_id});
+                    result = new OkObjectResult(new { message = "OK", status = true, postulante_id = opostulante.postulante_id });
+
+                }
                 return result;
 
             }
@@ -304,27 +337,27 @@ namespace SIGED_API.Controllers
 
 
             ////////
-            var postulantereque = context.Postulante.FirstOrDefault(p => p.postulante_id == postulante.postulante_id);
+            //var postulantereque = context.Postulante.FirstOrDefault(p => p.postulante_id == postulante.postulante_id);
 
-                    Postulante opostulante = new Postulante();
-                    opostulante.postulante_id = postulante.postulante_id;
-                    opostulante.nombre = postulante.nombre;
-                    opostulante.ape_paterno = postulante.ape_paterno;
-                    opostulante.ape_materno = postulante.ape_materno;
-                    opostulante.tipo_id = postulante.tipo_id;
-                    opostulante.numero = postulante.numero;
-                    opostulante.fec_nacimiento = postulante.fec_nacimiento;
-                    opostulante.celular = postulante.celular;
-                    opostulante.correo = postulante.correo;
-                    opostulante.contrasena = postulante.contrasena;
-                    opostulante.rep_contrasena = postulante.rep_contrasena;
-                    opostulante.estado = postulante.estado;
-                    opostulante.imageurl = postulantereque.imageurl;
-                    opostulante.archivocv = postulantereque.archivocv;
-                    opostulante.rol_id = postulantereque.rol_id;
-                    opostulante.seleccion_id = postulantereque.seleccion_id;
-                     context.Entry(opostulante).State = EntityState.Modified;
-                    context.SaveChanges();
+            Postulantes opostulante = new Postulantes();
+            opostulante.postulante_id = postulante.postulante_id;
+            opostulante.nombre = postulante.nombre;
+            opostulante.ape_paterno = postulante.ape_paterno;
+            opostulante.ape_materno = postulante.ape_materno;
+            opostulante.tipo_id = postulante.tipo_id;
+            opostulante.numero = postulante.numero;
+            opostulante.fec_nacimiento = postulante.fec_nacimiento;
+            opostulante.celular = postulante.celular;
+            opostulante.correo = postulante.correo;
+            opostulante.contrasena = Encrypt.GetSHA256(postulante.contrasena);
+            opostulante.rep_contrasena = Encrypt.GetSHA256(postulante.rep_contrasena);
+            opostulante.estado = postulante.estado;
+            opostulante.imageurl = postulante.imageurl;
+            opostulante.archivocv = postulante.archivocv;
+            opostulante.rol_id = postulante.rol_id;
+            opostulante.seleccion_id = postulante.seleccion_id;
+            context2.Entry(opostulante).State = EntityState.Modified;
+            context2.SaveChanges();
 
             var especialidad = context.Especialidad_postulante.ToList().Where((c => c.postulante_id == postulante.postulante_id));
 
@@ -346,7 +379,7 @@ namespace SIGED_API.Controllers
                     {
                        
                         oespecialidad.especialidad_post_id = 0;
-                        oespecialidad.postulante_id = opostulante.postulante_id;
+                        oespecialidad.postulante_id = postulante.postulante_id;
                         oespecialidad.especialidad_id = oPostEspecialidade.especialidad_id;
                         context.Especialidad_postulante.Add(oespecialidad);
                         context.SaveChanges();
@@ -354,7 +387,7 @@ namespace SIGED_API.Controllers
 
                   
                 }
-            var result = new OkObjectResult(new { message = "OK", status = true, postulante_id = opostulante.postulante_id });
+            var result = new OkObjectResult(new { message = "OK", status = true, postulante_id = postulante.postulante_id });
             return result;
             //if (postulante.postulante_id == id)
             //{
@@ -400,6 +433,43 @@ namespace SIGED_API.Controllers
 
             }
             return uniqueFileName;
+        }
+
+        private bool Validarcorreo(string correo, List<Postulante> postulantes)
+        {
+
+            bool validarcorreo = true;
+            foreach (var oPostpostulantelist in postulantes)
+            {
+                if (oPostpostulantelist.correo == correo)
+
+                {
+                    validarcorreo = false;
+
+                    return false;
+
+                }
+            }
+            return validarcorreo;
+        }
+
+
+        private bool Validarnumero(string numero, List<Postulante> postulantes)
+        {
+
+            bool validarnumero = true;
+            foreach (var oPostpostulantelist in postulantes)
+            {
+                if (oPostpostulantelist.numero == numero)
+
+                {
+                    validarnumero = false;
+
+                    return false;
+
+                }
+            }
+            return validarnumero;
         }
 
         // DELETE api/<PostulanteController>/5

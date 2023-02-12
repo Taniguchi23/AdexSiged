@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SIGED_API.Contexts;
 using SIGED_API.Entity;
 using SIGED_API.Models;
 using SIGED_API.Models.Request;
 using SIGED_API.Models.Response;
 using SIGED_API.Services;
+using SIGED_API.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,15 +95,19 @@ namespace SIGED_API.Controllers
 
             using (var httpClient = new HttpClient())
             {
-                var loginuser = new UserRequest() { UserName = login.correo, Password = login.contrasena };
+                string scontrasena = Encrypt.GetSHA256(login.contrasena);
+                var loginuser = new UserRequest() { UserName = login.correo, Password = scontrasena };
 
                 var respuestaa = await httpClient.PostAsJsonAsync(url, loginuser);
+                var responseadmin = await respuestaa.Content.ReadFromJsonAsync<Roles>();
+                //var employees = JsonConvert.DeserializeObject<List<Roles>>(respuestaa);
+
 
                 if (respuestaa.IsSuccessStatusCode)
                 {
                     var contentjs = await respuestaa.Content.ReadAsStringAsync();
 
-                    var roles = JsonSerializer.Deserialize<Roles>(contentjs, jsonSerializerOptions);
+                    var roles = System.Text.Json.JsonSerializer.Deserialize<Roles>(contentjs, jsonSerializerOptions);
 
                     UserResponse userrequest = new UserResponse();
 

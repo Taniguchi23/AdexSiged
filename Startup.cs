@@ -46,7 +46,23 @@ namespace SIGED_API
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
+            services.AddDbContext<AppDbContext>(a =>
+            {
+                a.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings"));
+                a.EnableSensitiveDataLogging();
+            });
 
+            services.AddDbContext<AppDbContext2>(a =>
+            {
+                a.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings"));
+                a.EnableSensitiveDataLogging();
+            });
+
+            services.AddDbContext<AppDbContext3>(a =>
+            {
+                a.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings"));
+                a.EnableSensitiveDataLogging();
+            });
             // jwt
             var appSettings = appSettingsSection.Get<AppSettings>();
             var llave = Encoding.ASCII.GetBytes(appSettings.Secreto);
