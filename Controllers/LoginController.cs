@@ -87,7 +87,7 @@ namespace SIGED_API.Controllers
 
         //}
 
-        [HttpPost("login")]
+        [HttpPost("")]
         public async Task<ActionResult> Autentificar([FromBody] Login login)
         {
             Respuesta respuesta = new Respuesta();
@@ -95,15 +95,15 @@ namespace SIGED_API.Controllers
 
             using (var httpClient = new HttpClient())
             {
-                string scontrasena = Encrypt.GetSHA256(login.contrasena);
-                var loginuser = new UserRequest() { UserName = login.correo, Password = scontrasena };
+                //string scontrasena = Encrypt.GetSHA256(login.contrasena);
+                var loginuser = new UserRequest() { UserName = login.correo, Password = login.contrasena };
 
                 var respuestaa = await httpClient.PostAsJsonAsync(url, loginuser);
                 var responseadmin = await respuestaa.Content.ReadFromJsonAsync<Roles>();
-                //var employees = JsonConvert.DeserializeObject<List<Roles>>(respuestaa);
+                
 
 
-                if (respuestaa.IsSuccessStatusCode)
+                if (responseadmin.status)
                 {
                     var contentjs = await respuestaa.Content.ReadAsStringAsync();
 
@@ -120,14 +120,15 @@ namespace SIGED_API.Controllers
                     userrequest.mensaje = roles.message;
                     userrequest.token = userresponseadmin.token;
 
-                    if (roles.status is true)
-                    {
+                    //if (roles.status is true)
+                    //{
 
                         respuesta.status = true;
                         respuesta.Data = userrequest;
                         return Ok(respuesta);
-                    }
-                    else
+                    //}
+                }
+                else
                     {
                         var userresponse = _userService.Auth(login);
 
@@ -151,14 +152,14 @@ namespace SIGED_API.Controllers
                     }
 
                     
-                }
-                else
-                {
+                
+                //else
+                //{
 
-                   return BadRequest();
+                //   return BadRequest();
 
                     
-                }
+                //}
 
             }
 

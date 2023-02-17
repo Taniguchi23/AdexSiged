@@ -349,8 +349,14 @@ namespace SIGED_API.Controllers
             opostulante.fec_nacimiento = postulante.fec_nacimiento;
             opostulante.celular = postulante.celular;
             opostulante.correo = postulante.correo;
-            opostulante.contrasena = Encrypt.GetSHA256(postulante.contrasena);
-            opostulante.rep_contrasena = Encrypt.GetSHA256(postulante.rep_contrasena);
+             if (postulante.contrasena != null) {
+
+                opostulante.contrasena =  Encrypt.GetSHA256(postulante.contrasena);
+            }
+            if (postulante.contrasena != null)
+            {
+                opostulante.rep_contrasena = Encrypt.GetSHA256(postulante.rep_contrasena);
+            }
             opostulante.estado = postulante.estado;
             opostulante.imageurl = postulante.imageurl;
             opostulante.archivocv = postulante.archivocv;
@@ -359,7 +365,11 @@ namespace SIGED_API.Controllers
             context2.Entry(opostulante).State = EntityState.Modified;
             context2.SaveChanges();
 
-            var especialidad = context.Especialidad_postulante.ToList().Where((c => c.postulante_id == postulante.postulante_id));
+            if (postulante.Especialidades != null)
+
+            {
+
+                var especialidad = context.Especialidad_postulante.ToList().Where((c => c.postulante_id == postulante.postulante_id));
 
             Especialidad_postulante oespecialidad = new Especialidad_postulante();
 
@@ -387,6 +397,8 @@ namespace SIGED_API.Controllers
 
                   
                 }
+
+            }
             var result = new OkObjectResult(new { message = "OK", status = true, postulante_id = postulante.postulante_id });
             return result;
             //if (postulante.postulante_id == id)
