@@ -12,11 +12,13 @@ namespace SIGED_API.Entity
 
         public int COORDINADOR_ID { get; set; }
 
-        public int MODULO_ID { get; set; }
-
         public DateTime FECHA { get; set; }
 
-        public int CALIFICACION { get; set; }
+        public bool ESTADO { get; set; }
+
+     
+
+
 
     }
 }

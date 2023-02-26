@@ -35,16 +35,19 @@ namespace SIGED_API.Controllers
         }
         // GET: api/<ModeloController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Modelo> Get()
         {
-            return new string[] { "value1", "value2" };
+
+            return context.Modelo.ToList();
+
         }
 
         // GET api/<ModeloController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Modelo Get(int id)
         {
-            return "value";
+            var modelo = context.Modelo.FirstOrDefault(p => p.modelo_id == id);
+            return modelo;
         }
 
         // POST api/<ModeloController>

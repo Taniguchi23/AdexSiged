@@ -29,37 +29,26 @@ namespace SIGED_API.Controllers
             this.context2 = context2;
             webHostEnviroment = webHost;
         }
-        // GET: api/<DetalleModeloController>
-        [HttpGet]
-        public ActionResult GETDETALLE([FromBody] ModeloDetalleRequest modelo)
+        
+
+        // GET api/<EspecialidadController>/5
+        [HttpGet("{id}")]
+        public Modelo Get(int id)
         {
-            try
-            {
 
-                     return Ok("Success");
-
-            }
-            catch (Exception ex)
-            {
-                return Ok("Failed");
-            }
+            var modelo = context2.Modelo.FirstOrDefault(p => p.modelo_id == id);
+            return modelo;
         }
 
-        // GET api/<DetalleModeloController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
 
         // POST api/<DetalleModeloController>
         [HttpPost]
         public ActionResult Post([FromBody] ModeloDetalleRequest modelos)
         {
+            var result = new OkObjectResult(0);
 
             try
             {
-
                 var temporal_imagen = context2.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 3);
 
                     Modelo ommodelo = new Modelo();
@@ -126,11 +115,13 @@ namespace SIGED_API.Controllers
                     context2.Oportunidad.Add(ooportunidades);
                     context2.SaveChanges();
                 }
-                return Ok("Success");
+                result = new OkObjectResult(new { message = "OK", status = true, modelo_id = ommodelo.modelo_id });
+
+                return result;
             }
             catch (Exception ex)
             {
-                return Ok("Failed");
+                return BadRequest();
             }
         }
 

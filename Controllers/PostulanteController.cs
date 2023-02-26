@@ -19,6 +19,8 @@ using Postulante = SIGED_API.Entity.Postulante;
 using Postulantes = SIGED_API.Models.Postulante;
 using Microsoft.AspNetCore.Authorization;
 using SIGED_API.Tools;
+using MimeKit.Text;
+using MimeKit;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -171,7 +173,7 @@ namespace SIGED_API.Controllers
                 else
                 {
 
-                    var temporal_imagen = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 1);
+                var temporal_imagen = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 1);
 
                 var temporal_archivo = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 2 & p.modulo == 1);
 
@@ -337,7 +339,7 @@ namespace SIGED_API.Controllers
 
 
             ////////
-            //var postulantereque = context.Postulante.FirstOrDefault(p => p.postulante_id == postulante.postulante_id);
+            var postulantereque = context.Postulante.FirstOrDefault(p => p.postulante_id == postulante.postulante_id);
 
             Postulantes opostulante = new Postulantes();
             opostulante.postulante_id = postulante.postulante_id;
@@ -349,13 +351,22 @@ namespace SIGED_API.Controllers
             opostulante.fec_nacimiento = postulante.fec_nacimiento;
             opostulante.celular = postulante.celular;
             opostulante.correo = postulante.correo;
-             if (postulante.contrasena != null) {
+          
+            if (postulante.contrasena != null) {
 
                 opostulante.contrasena =  Encrypt.GetSHA256(postulante.contrasena);
+            }
+            else
+            {
+                opostulante.contrasena = postulantereque.contrasena;
             }
             if (postulante.contrasena != null)
             {
                 opostulante.rep_contrasena = Encrypt.GetSHA256(postulante.rep_contrasena);
+            }
+            else
+            {
+                opostulante.rep_contrasena = postulantereque.rep_contrasena;
             }
             opostulante.estado = postulante.estado;
             opostulante.imageurl = postulante.imageurl;
@@ -411,6 +422,29 @@ namespace SIGED_API.Controllers
             //{
             //    return BadRequest();
             //}
+        }
+
+
+        [HttpPost("NotificacionRegistro")]
+        public string Notificar([FromBody] NOTIFICACION notificacion)
+        {
+            var vnotificacion = context.ENVIAR_CORREO.FirstOrDefault(p => p.envio_id == 2);
+
+            var vpostulante = context.Postulante.FirstOrDefault(p => p.postulante_id == notificacion.postulante_id);
+
+            var email = new MimeMessage();
+
+            email.From.Add(MailboxAddress.Parse(vnotificacion.destinatario));
+            email.To.Add(MailboxAddress.Parse(vpostulante.correo));
+            email.Subject = vnotificacion.asunto;
+            email.Body = new TextPart(TextFormat.Html) { Text = vnotificacion.mensaje };
+
+            using var smtp = new MailKit.Net.Smtp.SmtpClient();
+            smtp.Connect("smtp.office365.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate("ronald.livia@outlook.com", "Yama314162$");
+            smtp.Send(email);
+            smtp.Disconnect(true);
+            return "OK";
         }
 
         private string UploadedImagePostulante(TemporalRequest temporal)

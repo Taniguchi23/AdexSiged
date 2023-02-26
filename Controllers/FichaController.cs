@@ -187,7 +187,7 @@ namespace SIGED_API.Controllers
                 opago.CCI = ficha.cci;
                 opago.SISTEMA_PEN = ficha.sistema_pen;
                 opago.AFP_ID = ficha.afp_id;
-                opago.OTROS_BANCOS = ficha.otros_bancos;
+                //opago.OTROS_BANCOS = ficha.otros_bancos;
                 context3.PAGO.Add(opago);
                 context3.SaveChanges();
 

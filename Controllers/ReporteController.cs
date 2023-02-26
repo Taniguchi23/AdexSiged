@@ -39,14 +39,14 @@ namespace SIGED_API.Controllers
 
         // POST api/<ReporteController>
         [HttpPost]
-        public int GrabarReporte([FromBody] REPORTE reporte)
+        public ActionResult GrabarReporte([FromBody] REPORTE reporte)
         {
-
+            var result = new OkObjectResult(0);
             var vreporte = context.REPORTE.FirstOrDefault(p => p.postulante_id == reporte.postulante_id & p.area_id == reporte.area_id);
 
             if (vreporte != null)
             {
-                return vreporte.reporte_id;
+                result = new OkObjectResult(new { message = "YA EXISTE", status = true, reporte_id = vreporte.reporte_id });
             }
             else
             {
@@ -58,9 +58,11 @@ namespace SIGED_API.Controllers
                 context.REPORTE.Add(oreporte);
                 context.SaveChanges();
 
-                return oreporte.reporte_id;
+                //return oreporte.reporte_id;
+                result = new OkObjectResult(new { message = "OK", status = true, reporte_id = oreporte.reporte_id });
             }
 
+            return result;
 
         }
 

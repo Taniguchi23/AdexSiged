@@ -11,8 +11,6 @@ namespace SIGED_API.Models
 
         public int postulante_id { get; set; }
 
-        public int EVALUADOR_ID { get; set; }
-
         public int evaluador_id { get; set; }
 
         public DateTime fecha { get; set; }
@@ -33,7 +31,7 @@ namespace SIGED_API.Models
 
         public bool estado { get; set; }
 
-        public List<rutina1> rutinasone { get; set; }
+        public List<rutina1> rutinas1 { get; set; }
         public class rutina1
         {
             public int rutina1_id { get; set; }
@@ -42,10 +40,10 @@ namespace SIGED_API.Models
 
             public int rutina_id { get; set; }
 
-            public int calificacion { get; set; }
+            public decimal calificacion { get; set; }
         }
 
-        public List<rutina2> rutinastwo { get; set; }
+        public List<rutina2> rutinas2 { get; set; }
         public class rutina2
         {
             public int rutina1_id { get; set; }
@@ -54,11 +52,11 @@ namespace SIGED_API.Models
 
             public int rutina_id { get; set; }
 
-            public int calificacion { get; set; }
+            public decimal calificacion { get; set; }
         }
 
 
-        public List<rutina3> rutinastree { get; set; }
+        public List<rutina3> rutinas3 { get; set; }
         public class rutina3
         {
             public int rutina1_id { get; set; }
@@ -67,11 +65,11 @@ namespace SIGED_API.Models
 
             public int rutina_id { get; set; }
 
-            public int calificacion { get; set; }
+            public decimal calificacion { get; set; }
         }
 
 
-        public List<rutina4> rutinasfour { get; set; }
+        public List<rutina4> rutinas4 { get; set; }
         public class rutina4
         {
             public int rutina1_id { get; set; }
@@ -80,7 +78,7 @@ namespace SIGED_API.Models
 
             public int rutina_id { get; set; }
 
-            public int calificacion { get; set; }
+            public decimal calificacion { get; set; }
         }
     }
 }

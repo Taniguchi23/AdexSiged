@@ -20,6 +20,8 @@ namespace SIGED_API.Contexts
 
         public DbSet<Postulante> Postulante { get; set; }
 
+        public DbSet<Especialidad_postulante> Especialidad_postulante { get; set; }
+
         public DbSet<Rubrica_Modelo> Rubrica_Modelo { get; set; }
 
         public DbSet<Fortaleza> Fortaleza { get; set; }

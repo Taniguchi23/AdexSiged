@@ -12,6 +12,6 @@ namespace SIGED_API.Entity
 
         public int RUTINA_ID { get; set; }
 
-        public int CALIFICACION { get; set; }
+        public decimal CALIFICACION { get; set; }
     }
 }

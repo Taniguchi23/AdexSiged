@@ -11,9 +11,12 @@ namespace SIGED_API.Entity
 
         public int postulante_id { get; set; }
 
-        //public int fecha { get; set; }
+        public DateTime fecha_actividad { get; set; }
+        public DateTime fecha_desde { get; set; }
+        public DateTime fecha_hasta { get; set; }
 
-        //public bool estado { get; set; }
+        public DateTime fecha_programacion { get; set; }
+
 
     }
 }

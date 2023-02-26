@@ -61,7 +61,12 @@ namespace SIGED_API.Models
 
         public int area_id { get; set; }
 
-        public int medio_id { get; set; }
+        public bool referido_linkedin { get; set; }
+
+        public bool referido_indeed { get; set; }
+
+        public bool referido { get; set; }
+
 
         public string otros_medio { get; set; }
 
@@ -154,6 +159,8 @@ namespace SIGED_API.Models
             public DateTime fecha_cese { get; set; }
 
             public string motivo_cese { get; set; }
+
+            public bool autorizo_contactar { get; set; }
         }
 
 
@@ -202,11 +209,12 @@ namespace SIGED_API.Models
 
         public string sistema_pen { get; set; }
 
+        public string otrosbancos { get; set; }
+
         public int afp_id { get; set; }
 
-        public string otros_bancos { get; set; }
+        
 
-        [NotMapped]
-        public IFormFile FrontImage { get; set; }
+      
     }
 }

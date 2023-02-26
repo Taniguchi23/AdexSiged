@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using SIGED_API.Contexts;
 using SIGED_API.Entity;
+using SIGED_API.Ficha;
 using SIGED_API.Models;
+using SIGED_API.Tools;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,7 +23,7 @@ namespace SIGED_API.Controllers
         private readonly AppDbContext2 context2;
         private readonly IWebHostEnvironment webHostEnviroment;
 
-        public EvaluacionController(AppDbContext2 context2, IWebHostEnvironment webHost)
+        public EvaluacionController( AppDbContext2 context2, IWebHostEnvironment webHost)
         {
             this.context2 = context2;
             webHostEnviroment = webHost;
@@ -34,46 +37,89 @@ namespace SIGED_API.Controllers
         }
 
         // GET api/<EvaluacionController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("Iniciar/{especialidad_id}")]
+        public IEnumerable<DetalleEvaluacion> Get(int especialidad_id)
         {
-            return "value";
+            List<DetalleEvaluacion> evaluacion = new List<DetalleEvaluacion>();
+
+
+           
+               evaluacion = context2.Especialidad_postulante.Join(context2.Postulante,
+               sd => sd.postulante_id,
+               r => r.postulante_id,
+               (sd, r) => new { sd, r }
+               ).Where(c => c.sd.especialidad_id == especialidad_id)
+               .Select(res => new DetalleEvaluacion()
+               {
+                   postulante_id = res.r.postulante_id,
+                   nombre_completo = res.r.ape_paterno + " " + res.r.ape_materno + " " + res.r.nombre,
+
+
+               }).ToList();
+
+       
+            return evaluacion;
+            
+          
         }
 
         // POST api/<EvaluacionController>
-        [HttpPost]
+        [HttpPost("Grabar")]
         public ActionResult Post([FromBody] EvaluacionRequest evaluacion)
         {
+            var result = new OkObjectResult(0);
+
             try
             {
+                
 
-                EVALUACION oevaluacion = new EVALUACION();
-                oevaluacion.POSTULANTE_ID = evaluacion.postulante_id;
-                oevaluacion.COORDINADOR_ID = evaluacion.coordinador_id;
-                oevaluacion.MODULO_ID = evaluacion.modulo_id;
-                oevaluacion.FECHA = evaluacion.fecha;
-                context2.EVALUACION.Add(oevaluacion);
-                context2.SaveChanges();
+                var vevaluacion = context2.EVALUACION.FirstOrDefault(p => p.POSTULANTE_ID == evaluacion.postulante_id & p.COORDINADOR_ID == evaluacion.coordinador_id);
 
-
-                foreach (var odetalles in evaluacion.Detalle_evaluacion)
+                if (vevaluacion != null)
                 {
-                    DETALLE_EVALUACION odetalle = new DETALLE_EVALUACION();
-                    odetalle.EVALUACION_ID = oevaluacion.EVALUACION_ID;
-                    odetalle.COMPONENTE_ID = odetalles.componente_id;
-                    odetalle.CALIFICACION = odetalles.calificacion;
-                    odetalle.PUNTAJE = odetalles.puntaje;
-
-                    context2.DETALLE_EVALUACION.Add(odetalle);
-                    context2.SaveChanges();
+                    result = new OkObjectResult(new { message = "Ya existe", status = true, status_reg = vevaluacion.ESTADO,  EVALUACION = vevaluacion.EVALUACION_ID });
+                
                 }
+                else
+                {
+                    EVALUACION oevaluacion = new EVALUACION();
+                    oevaluacion.POSTULANTE_ID = evaluacion.postulante_id;
+                    oevaluacion.COORDINADOR_ID = evaluacion.coordinador_id;
+                    oevaluacion.ESTADO = false;
+                    oevaluacion.FECHA = evaluacion.fecha;
+                    context2.EVALUACION.Add(oevaluacion);
+                    context2.SaveChanges();
 
-                return Ok();
+                   
+                    if (evaluacion.Detalle_evaluacion != null) 
+                    
+                    { 
+
+                    foreach (var odetalles in evaluacion.Detalle_evaluacion)
+                    {
+                        DETALLE_EVALUACION odetalle = new DETALLE_EVALUACION();
+                        odetalle.EVALUACION_ID = oevaluacion.EVALUACION_ID;
+                        odetalle.POSTULANTE_ID = evaluacion.postulante_id;
+                        odetalle.ENC_ESTU = odetalles.enc_estu;
+                        odetalle.CUM_ADM = odetalles.cum_adm;
+                        odetalle.CAP_DOC = odetalles.cap_doc;
+                        odetalle.ACOM_DOC = odetalles.acom_doc;
+                        odetalle.CUM_VIR = odetalles.cum_adm;
+                        odetalle.NOTA_FINAL = odetalles.nota_final;
+
+                        context2.DETALLE_EVALUACION.Add(odetalle);
+                        context2.SaveChanges();
+                    }
+                        result = new OkObjectResult(new { message = "OK", status = true });
+
+                    }
+                }
+                return result;
 
             }
             catch (Exception ex)
             {
-                return Ok("Failed");
+                return BadRequest();
             }
         }
 

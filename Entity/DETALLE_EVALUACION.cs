@@ -9,10 +9,18 @@ namespace SIGED_API.Entity
 
         public int EVALUACION_ID { get; set; }
 
-        public int COMPONENTE_ID { get; set; }
+        public int POSTULANTE_ID { get; set; }
 
-        public int CALIFICACION { get; set; }
+        public int ENC_ESTU { get; set; }
 
-        public int PUNTAJE { get; set; }
+        public int CUM_ADM { get; set; }
+
+        public int CAP_DOC { get; set; }
+
+        public int ACOM_DOC { get; set; }
+
+        public int CUM_VIR { get; set; }
+
+        public decimal NOTA_FINAL { get; set; }
     }
 }
