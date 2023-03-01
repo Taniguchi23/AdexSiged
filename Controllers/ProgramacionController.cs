@@ -75,79 +75,56 @@ namespace SIGED_API.Controllers
 
 
         [HttpGet("ConsultarDocente/{docente}")]
-        public Postulante ConsultarDocente(string docente)
+        public IEnumerable<DetalleProgramacion> ConsultarDocente(string docente)
         {
+            List<DetalleProgramacion> evaluacion = new List<DetalleProgramacion>();
 
 
-            Postulante postulante = new Postulante();
 
-            postulante = context.PROGRAMACION.Join(context.Postulante,
+            evaluacion = context.PROGRAMACION.Join(context.Postulante,
                sd => sd.postulante_id,
                r => r.postulante_id,
                (sd, r) => new { sd, r }
                ).Where(c => c.r.nombre.Contains(docente))
-               .Select(res => new Postulante()
+               .Select(res => new DetalleProgramacion()
                {
                    postulante_id = res.r.postulante_id,
-                   nombre = res.r.nombre,
-                   ape_paterno = res.r.ape_paterno,
-                   ape_materno = res.r.ape_materno,
-                   tipo_id = res.r.tipo_id,
-                   numero = res.r.numero,
-                   fec_nacimiento = res.r.fec_nacimiento,
-                   celular = res.r.celular,
-                   contrasena = Encrypt.GetSHA256(res.r.contrasena),
-                   rep_contrasena = Encrypt.GetSHA256(res.r.rep_contrasena),
-                   imageurl = res.r.imageurl,
-                   archivocv = res.r.archivocv,
-                   rol_id = res.r.rol_id,           
-                   correo = res.r.correo,
+                   nombre_completo = res.r.ape_paterno + " " + res.r.ape_materno + " " + res.r.nombre,
                    estado = res.r.estado
 
-               }).FirstOrDefault();
+               }).ToList();
 
         
 
-            return postulante;
+            return evaluacion;
 
 
         }
 
         [HttpGet("ConsultarDocente/{fechadesde}/{fechahasta}")]
-        public Postulante ConsultarFechas(string fechadesde, string fechahasta)
+        public IEnumerable<DetalleProgramacion> ConsultarFechas(string fechadesde, string fechahasta)
         {
-            Postulante postulante = new Postulante();
+            
             DateTime fechades = Convert.ToDateTime(fechadesde);
-            DateTime fechahas = Convert.ToDateTime(fechadesde);
-            postulante = context.PROGRAMACION.Join(context.Postulante,
+            DateTime fechahas = Convert.ToDateTime(fechahasta);
+
+            List<DetalleProgramacion> evaluacion = new List<DetalleProgramacion>();
+
+
+           evaluacion = context.PROGRAMACION.Join(context.Postulante,
                sd => sd.postulante_id,
                r => r.postulante_id,
                (sd, r) => new { sd, r }
-               ).Where(c => c.sd.fecha >= fechades && c.sd.fecha <= fechahas)
-               .Select(res => new Postulante()
+           ).Where(c => c.sd.fecha >= fechades && c.sd.fecha <= fechahas)
+               .Select(res => new DetalleProgramacion()
                {
                    postulante_id = res.r.postulante_id,
-                   nombre = res.r.nombre,
-                   ape_paterno = res.r.ape_paterno,
-                   ape_materno = res.r.ape_materno,
-                   tipo_id = res.r.tipo_id,
-                   numero = res.r.numero,
-                   fec_nacimiento = res.r.fec_nacimiento,
-                   celular = res.r.celular,
-                   contrasena = Encrypt.GetSHA256(res.r.contrasena),
-                   rep_contrasena = Encrypt.GetSHA256(res.r.rep_contrasena),
-                   imageurl = res.r.imageurl,
-                   archivocv = res.r.archivocv,
-                   rol_id = res.r.rol_id,
-                   correo = res.r.correo,
+                   nombre_completo = res.r.ape_paterno + " " + res.r.ape_materno + " " + res.r.nombre,
                    estado = res.r.estado
 
-               }).FirstOrDefault();
+               }).ToList();
 
-
-
-            return postulante;
-
+            return evaluacion;
 
         }
 

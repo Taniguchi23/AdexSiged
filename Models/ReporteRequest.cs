@@ -29,7 +29,7 @@ namespace SIGED_API.Models
 
         public string archivo { get; set; }
 
-        public bool estado { get; set; }
+        public string estado { get; set; }
 
         public List<rutina1> rutinas1 { get; set; }
         public class rutina1

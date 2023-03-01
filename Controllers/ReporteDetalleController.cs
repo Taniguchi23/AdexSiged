@@ -23,12 +23,15 @@ namespace SIGED_API.Controllers
     [Authorize]
     public class ReporteDetalleController : ControllerBase
     {
+
         private readonly AppDbContext2 context2;
         private readonly IWebHostEnvironment webHostEnviroment;
 
         public ReporteDetalleController(AppDbContext2 context2, IWebHostEnvironment webHost)
         {
+            
             this.context2 = context2;
+            
             webHostEnviroment = webHost;
         }
         // GET: api/<ReporteDetalleController>
@@ -50,6 +53,7 @@ namespace SIGED_API.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] ReporteRequest reportes)
         {
+
             var result = new OkObjectResult(0);
             try
             {
@@ -96,15 +100,16 @@ namespace SIGED_API.Controllers
                     context2.SaveChanges();
                 }
                 
-                var vreporte = context2.REPORTE.FirstOrDefault(p => p.REPORTE_ID == reportes.reporte_id);
+                //var vreporte = context2.REPORTE.FirstOrDefault(p => p.REPORTE_ID == reportes.reporte_id);
 
                 var temporal_imagen = context2.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 3);
 
-                if (vreporte != null )
+                //if (vreporte != null )
 
-                {
+                //{
 
                     REPORTE oreporte = new REPORTE();
+                    oreporte.REPORTE_ID = reportes.reporte_id;
                     oreporte.POSTULANTE_ID = reportes.postulante_id;
                     oreporte.EVALUADOR_ID = reportes.evaluador_id;
                     oreporte.AREA_ID = reportes.evaluador_id;
@@ -120,7 +125,7 @@ namespace SIGED_API.Controllers
                     context2.Entry(oreporte).State = EntityState.Modified;
                     context2.SaveChanges();
 
-                }
+                //}
                 result = new OkObjectResult(new { message = "OK", status = true, reporte_id = reportes.reporte_id });
 
                 return result;

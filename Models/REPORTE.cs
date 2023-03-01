@@ -31,6 +31,6 @@ namespace SIGED_API.Models
 
         public string ? ARCHIVO { get; set; }
 
-        public bool ? ESTADO { get; set; }
+        public string ? ESTADO { get; set; }
     }
 }
