@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SIGED_API.Contexts;
 using SIGED_API.Entity;
 using SIGED_API.Ficha;
 using SIGED_API.Models;
+using SIGED_API.Models.Request;
 using SIGED_API.Tools;
 using System;
 using System.Collections.Generic;
@@ -31,9 +33,26 @@ namespace SIGED_API.Controllers
 
         // GET: api/<EvaluacionController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<DetalleEvaluacion> Get()
         {
-            return new string[] { "value1", "value2" };
+            List<DetalleEvaluacion> evaluacion = new List<DetalleEvaluacion>();
+
+
+
+            evaluacion = context2.Especialidad_postulante.Join(context2.Postulante,
+            sd => sd.postulante_id,
+            r => r.postulante_id,
+            (sd, r) => new { sd, r }
+            ).Select(res => new DetalleEvaluacion()
+            {
+                postulante_id = res.r.postulante_id,
+                nombre_completo = res.r.ape_paterno + " " + res.r.ape_materno + " " + res.r.nombre,
+
+
+            }).ToList();
+
+
+            return evaluacion;
         }
 
         // GET api/<EvaluacionController>/5
@@ -77,9 +96,31 @@ namespace SIGED_API.Controllers
 
                 if (vevaluacion != null)
                 {
+
+
                     result = new OkObjectResult(new { message = "Ya existe", status = true, status_reg = vevaluacion.ESTADO,  EVALUACION = vevaluacion.EVALUACION_ID });
-                
+
+
+                    foreach (var odetalles in evaluacion.Detalle_evaluacion)
+                    {
+                        DETALLE_EVALUACION odetalle = new DETALLE_EVALUACION();
+                        odetalle.DETALLE_EVALUACION_ID = odetalles.detalle_evaluacion_id;
+                        odetalle.EVALUACION_ID = evaluacion.evaluacion_id;
+                        odetalle.POSTULANTE_ID = evaluacion.postulante_id;
+                        odetalle.ENC_ESTU = odetalles.enc_estu;
+                        odetalle.CUM_ADM = odetalles.cum_adm;
+                        odetalle.CAP_DOC = odetalles.cap_doc;
+                        odetalle.ACOM_DOC = odetalles.acom_doc;
+                        odetalle.CUM_VIR = odetalles.cum_adm;
+                        odetalle.NOTA_FINAL = odetalles.nota_final;
+                        context2.Entry(odetalle).State = EntityState.Modified;
+                   
+                        context2.SaveChanges();
+                    }
+                    result = new OkObjectResult(new { message = "OK", status = true });
+
                 }
+
                 else
                 {
                     EVALUACION oevaluacion = new EVALUACION();

@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using MailKit.Net.Smtp;
+using System;
+using SIGED_API.Models;
+using SIGED_API.Ficha;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -79,25 +82,41 @@ namespace SIGED_API.Controllers
         //}
 
         [HttpPost("NotificacionInducciones")]
-        public string Notificar([FromBody] NOTIFICACION notificacion)
+        public ActionResult Notificar([FromBody] NOTIFICACION notificacion)
         {
-            var vnotificacion = context.ENVIAR_CORREO.FirstOrDefault(p => p.envio_id == 1);
+            var result = new OkObjectResult(0);
 
             var vpostulante = context.Postulante.FirstOrDefault(p => p.postulante_id == notificacion.postulante_id);
+            try
+            {
+                var vnotificacion = context.ENVIAR_CORREO.FirstOrDefault(p => p.envio_id == 1);
 
-            var email = new MimeMessage();
+             
 
-            email.From.Add(MailboxAddress.Parse(vnotificacion.destinatario));
-            email.To.Add(MailboxAddress.Parse(vpostulante.correo));
-            email.Subject = vnotificacion.asunto;
-            email.Body = new TextPart(TextFormat.Html) { Text = "<p>!Queremos darte la bienvenida al Staff de docentes del Instituto ADEX y decirte que, estamos seguros que ti profesionalismo aportara a nuestra instituicon en favor de la educacion y el aprendizaje!</p><p>  A fin de iniciar actividades de capacion e induccion docente, se le informa lo siguiente:</p> <p>  1. Pongo en copia al area de Soporte TI y Programacion Academica a fin de activar sus acccesos a las plataformas: Licencia Zoom, Aula Virtual e Intranet(Power Campus). Adjuntamos el formato de disponibilidad con sus datos iniciales.</p>  <p>   2. Usted iniciara actividades academicas a partir del dia "+ notificacion.fecha_actividad.ToString("dddd") + " " + notificacion.fecha_actividad.ToString("dd") + " de " + notificacion.fecha_actividad.ToString("MMMM") + ". En los proximos dias se le informara sobre su programacion horario, la misma que podra visualizaria en el sistema Power Campus.</p><p>  3. Se lea agregara al grupo de whasatapp \"Super Docente ADEX\" que tienes como fin compartir informacion sobres buenas practicas docentes</p><p> 4. Se le inscribira al curso Gimnsaio Virtual Docente en el Aula Virtual(habilitado del " + notificacion.fecha_desde.ToString("dd") + " " + notificacion.fecha_desde.ToString("MMMM") +  " al  "+ notificacion.fecha_hasta.ToString("dd")  + " " + notificacion.fecha_hasta.ToString("MMMM") + ") y a un curso de prueba donde podra poner en practica lo aprendido a fin de que pueda dominar las plataformas de ADEX.</p><p> Saludos cordiales</p><p><b> Gestion Docente</b></p>" };
-        
-            using  var smtp = new MailKit.Net.Smtp.SmtpClient();
-            smtp.Connect("smtp.office365.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate("ronald.livia@outlook.com", "Yama314162$");
-            smtp.Send(email);
-            smtp.Disconnect(true);
-            return  "OK";
+                var email = new MimeMessage();
+
+                email.From.Add(MailboxAddress.Parse(vnotificacion.destinatario));
+                email.To.Add(MailboxAddress.Parse(vpostulante.correo));
+                email.Subject = vnotificacion.asunto;
+                email.Body = new TextPart(TextFormat.Html) { Text = "<p>!Queremos darte la bienvenida al Staff de docentes del Instituto ADEX y decirte que, estamos seguros que ti profesionalismo aportara a nuestra instituicon en favor de la educacion y el aprendizaje!</p><p>  A fin de iniciar actividades de capacion e induccion docente, se le informa lo siguiente:</p> <p>  1. Pongo en copia al area de Soporte TI y Programacion Academica a fin de activar sus acccesos a las plataformas: Licencia Zoom, Aula Virtual e Intranet(Power Campus). Adjuntamos el formato de disponibilidad con sus datos iniciales.</p>  <p>   2. Usted iniciara actividades academicas a partir del dia " + notificacion.fecha_actividad.ToString("dddd") + " " + notificacion.fecha_actividad.ToString("dd") + " de " + notificacion.fecha_actividad.ToString("MMMM") + ". En los proximos dias se le informara sobre su programacion horario, la misma que podra visualizaria en el sistema Power Campus.</p><p>  3. Se lea agregara al grupo de whasatapp \"Super Docente ADEX\" que tienes como fin compartir informacion sobres buenas practicas docentes</p><p> 4. Se le inscribira al curso Gimnsaio Virtual Docente en el Aula Virtual(habilitado del " + notificacion.fecha_desde.ToString("dd") + " " + notificacion.fecha_desde.ToString("MMMM") + " al  " + notificacion.fecha_hasta.ToString("dd") + " " + notificacion.fecha_hasta.ToString("MMMM") + ") y a un curso de prueba donde podra poner en practica lo aprendido a fin de que pueda dominar las plataformas de ADEX.</p><p> Saludos cordiales</p><p><b> Gestion Docente</b></p>" };
+
+                using var smtp = new MailKit.Net.Smtp.SmtpClient();
+                smtp.Connect("smtp.office365.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                smtp.Authenticate("ronald.livia@outlook.com", "Yama314162$");
+                smtp.Send(email);
+                smtp.Disconnect(true);
+
+                result = new OkObjectResult(new { message = "OK", status = true, postulante_id = notificacion.postulante_id });
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                 result = new OkObjectResult(new { essage = "NOOK", status = false, postulante_id = notificacion.postulante_id , full_name = vpostulante.nombre + ' ' + vpostulante.ape_paterno });
+                return result;
+            } 
+
+            
         }
 
 

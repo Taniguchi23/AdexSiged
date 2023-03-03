@@ -21,6 +21,8 @@ using Microsoft.AspNetCore.Authorization;
 using SIGED_API.Tools;
 using MimeKit.Text;
 using MimeKit;
+using SIGED_API.Ficha;
+using SIGED_API.Models.Request;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,13 +35,15 @@ namespace SIGED_API.Controllers
     {
         private readonly AppDbContext context;
         private readonly AppDbContext2 context2;
+        private readonly AppDbContext4 context4;
         private readonly ILogger<PostulanteController> logger;
         private readonly IWebHostEnvironment webHostEnviroment;
-        public PostulanteController(AppDbContext context, AppDbContext2 context2, ILogger<PostulanteController> logger, IWebHostEnvironment webHost)
+        public PostulanteController(AppDbContext context, AppDbContext2 context2, AppDbContext4 context4, ILogger<PostulanteController> logger, IWebHostEnvironment webHost)
         //public PostulanteController(AppDbContext context)
         {
             this.context = context;
             this.context2 = context2;
+            this.context4 = context4;
             webHostEnviroment = webHost;
         }
 
@@ -324,8 +328,15 @@ namespace SIGED_API.Controllers
             }
         }
 
+        [HttpPut("statusPostulante")]
+        public ActionResult ActualizarEstado([FromBody] Models.Request.Postulante postulante)
+        {
+            context4.Entry(postulante).State = EntityState.Modified;
+            context4.SaveChanges();
 
-
+            var result = new OkObjectResult(new { message = "OK", status = true, postulante_id = postulante.postulante_id });
+            return result;
+        }
         // PUT api/<PostulanteController>/5
         [HttpPut()]
         public ActionResult Put([FromBody] PostulanteRequest postulante)

@@ -30,10 +30,27 @@ namespace SIGED_API.Controllers
         }
         // GET: api/<ProgramacionController>
         [HttpGet]
-        public IEnumerable<PROGRAMACION> Get()
+        public IEnumerable<DetalleProgramacion> Get()
         {
 
-            return context.PROGRAMACION.ToList();
+            List<DetalleProgramacion> evaluacion = new List<DetalleProgramacion>();
+
+            evaluacion = context.PROGRAMACION.Join(context.Postulante,
+             sd => sd.postulante_id,
+             r => r.postulante_id,
+             (sd, r) => new { sd, r }
+             ).Select(res => new DetalleProgramacion()
+             {
+                 postulante_id = res.r.postulante_id,
+                 nombre_completo = res.r.ape_paterno + " " + res.r.ape_materno + " " + res.r.nombre,
+                 estado = res.r.estado
+
+             }).ToList();
+
+
+
+            return evaluacion;
+
 
         }
 

@@ -41,6 +41,7 @@ namespace SIGED_API
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings")));
             services.AddDbContext<AppDbContext2>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings")));
             services.AddDbContext<AppDbContext3>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings")));
+            services.AddDbContext<AppDbContext4>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings")));
 
             services.AddControllers();
 
@@ -59,6 +60,11 @@ namespace SIGED_API
             });
 
             services.AddDbContext<AppDbContext3>(a =>
+            {
+                a.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings"));
+                a.EnableSensitiveDataLogging();
+            });
+            services.AddDbContext<AppDbContext4>(a =>
             {
                 a.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings"));
                 a.EnableSensitiveDataLogging();

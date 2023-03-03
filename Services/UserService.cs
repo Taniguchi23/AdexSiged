@@ -11,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using Postulante = SIGED_API.Entity.Postulante;
 
 namespace SIGED_API.Services
 {
