@@ -156,7 +156,7 @@ namespace SIGED_API.Controllers
             email.From.Add(MailboxAddress.Parse(vnotificacion.destinatario));
             email.To.Add(MailboxAddress.Parse(vpostulante.correo));
             email.Subject = vnotificacion.asunto;
-            email.Body = new TextPart(TextFormat.Html) { Text = " <p>  Estimado docente, le informamos que la programación de su evaluación del Gimnasio Virtual será el día " + fecha.ToString("dd") + " de " + fecha.ToString("MMMM") + " a las 18:00 horas.  </p> <p>Favor de confirmar la recepción del presente.   </p> <p>Gracias por su amable atención.  </p> <p>Saludos cordiales    </p>   <p><b>Gestión Docente   </b>  </p>" };
+            email.Body = new TextPart(TextFormat.Html) { Text = " <p>  Estimado docente, le informamos que la programación de su evaluación del Gimnasio Virtual será el día " + fecha.ToString("dd") + " de " + fecha.ToString("MMMM") + " a las "+ fecha.ToString("hh:mm") + " horas.  </p> <p>Favor de confirmar la recepción del presente.   </p> <p>Gracias por su amable atención.  </p> <p>Saludos cordiales    </p>   <p><b>Gestión Docente   </b>  </p>" };
 
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
             smtp.Connect("smtp.office365.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
