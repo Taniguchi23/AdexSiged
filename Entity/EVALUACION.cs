@@ -6,15 +6,15 @@ namespace SIGED_API.Entity
     public class EVALUACION
     {
         [Key]
-        public int EVALUACION_ID { get; set; }
+        public int evaluacion_id { get; set; }
 
-        public int POSTULANTE_ID { get; set; }
+        public int administrador_id { get; set; }
 
-        public int COORDINADOR_ID { get; set; }
+        public int especialidad_id { get; set; }
 
-        public DateTime FECHA { get; set; }
+        public DateTime fecha { get; set; }
 
-        public bool ESTADO { get; set; }
+        public bool estado { get; set; }
 
      
 

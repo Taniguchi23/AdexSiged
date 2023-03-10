@@ -10,9 +10,9 @@ namespace SIGED_API.Models
         [Key]
         public int evaluacion_id { get; set; }
 
-        public int postulante_id { get; set; }
+        public int administrador_id { get; set; }
 
-        public int coordinador_id { get; set; }
+        public int especialidad_id { get; set; }
 
         public DateTime fecha { get; set; }
 
