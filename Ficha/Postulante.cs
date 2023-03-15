@@ -60,9 +60,9 @@ namespace SIGED_API.Ficha
 
         public string ? nombre_familiar { get; set; }
 
-        public int ? area_id { get; set; }
+        public int  area_id { get; set; }
 
-        public int ? medio_id { get; set; }
+        public int  referido_linkedin { get; set; }
 
         public string ? otros_medio { get; set; }
 

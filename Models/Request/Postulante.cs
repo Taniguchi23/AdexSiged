@@ -7,5 +7,6 @@ namespace SIGED_API.Models.Request
         [Key]
         public int postulante_id { get; set; }
         public string estado { get; set; }
+        public bool estado_contratado { get; set; }
     }
 }

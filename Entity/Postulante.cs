@@ -32,7 +32,7 @@ namespace SIGED_API.Entity
 
         public string ? estado { get; set; }
 
-        
+        public bool ? estado_contratado { get; set; }
 
         //[NotMapped]
         //public IFormFile FrontImage { get; set; }

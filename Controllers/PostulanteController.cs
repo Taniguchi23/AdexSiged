@@ -93,7 +93,9 @@ namespace SIGED_API.Controllers
                    rol_id = res.r.rol_id,
                    seleccion_id = res.sd.seleccion_id,
                    correo= res.r.correo,
-                   estado = res.r.estado
+                   estado = res.r.estado,
+                   estado_contratado = res.r.estado_contratado
+
 
                }).FirstOrDefault();
 
@@ -337,6 +339,19 @@ namespace SIGED_API.Controllers
             var result = new OkObjectResult(new { message = "OK", status = true, postulante_id = postulante.postulante_id });
             return result;
         }
+
+        [HttpPut("statusContrado")]
+        public ActionResult ActualizarEstadoContratao([FromBody] Models.Request.Postulante postulante)
+        {
+            var postulanteest = context2.Postulante.FirstOrDefault(p => p.postulante_id == postulante.postulante_id);
+            postulanteest.estado_contratado = postulante.estado_contratado;
+            context2.Entry(postulanteest).State = EntityState.Modified;
+            context2.SaveChanges();
+
+            var result = new OkObjectResult(new { message = "OK", status = true, postulante_id = postulante.postulante_id });
+            return result;
+        }
+
         // PUT api/<PostulanteController>/5
         [HttpPut()]
         public ActionResult Put([FromBody] PostulanteRequest postulante)

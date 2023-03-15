@@ -7,6 +7,7 @@ using SIGED_API.Contexts;
 using SIGED_API.Entity;
 using SIGED_API.Ficha;
 using SIGED_API.Models;
+using SIGED_API.Models.Request;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -102,13 +103,21 @@ namespace SIGED_API.Controllers
                 
                 //var vreporte = context2.REPORTE.FirstOrDefault(p => p.REPORTE_ID == reportes.reporte_id);
 
-                var temporal_imagen = context2.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 3);
+                var temporal_imagen = context2.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 4);
 
                 //if (vreporte != null )
 
                 //{
 
-                    REPORTE oreporte = new REPORTE();
+                if (temporal_imagen != null)
+                {
+                
+                    context2.TEMPORAL_IMAGEN.Remove(temporal_imagen);
+                    context2.SaveChanges();
+
+                }
+
+                REPORTE oreporte = new REPORTE();
                     oreporte.REPORTE_ID = reportes.reporte_id;
                     oreporte.POSTULANTE_ID = reportes.postulante_id;
                     oreporte.EVALUADOR_ID = reportes.evaluador_id;
@@ -148,14 +157,13 @@ namespace SIGED_API.Controllers
                 opostulante.archivo = uniqueFileName;
                 opostulante.descripcion = uniqueFileName;
                 opostulante.tipoarchivo = 1;
-                opostulante.modulo = 3;
+                opostulante.modulo = 4;
                 context2.TEMPORAL_IMAGEN.Add(opostulante);
                 context2.SaveChanges();
 
-                if (id > 0)
+                var opreporte = context2.REPORTE.FirstOrDefault(p => p.REPORTE_ID == id);
+                if (opreporte != null)
                 {
-
-                    var opreporte = context2.REPORTE.FirstOrDefault(p => p.REPORTE_ID == id);
 
                     opreporte.ARCHIVO = uniqueFileName;
                     context2.Entry(opreporte).State = EntityState.Modified;

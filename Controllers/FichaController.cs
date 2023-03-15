@@ -68,6 +68,8 @@ namespace SIGED_API.Controllers
             try
             {
 
+                var temporal_imagen = context3.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 2);
+
                 Estudio_Realizado oestudio = new Estudio_Realizado();
                 oestudio.postulante_id = ficha.postulante_id;
                 oestudio.otros = ficha.otros;
@@ -191,6 +193,24 @@ namespace SIGED_API.Controllers
                 context3.PAGO.Add(opago);
                 context3.SaveChanges();
 
+
+
+                if (temporal_imagen != null)
+                {
+
+                    //ommodelo.referencia = temporal_imagen.archivo;
+                    context3.TEMPORAL_IMAGEN.Remove(temporal_imagen);
+                    context3.SaveChanges();
+
+                }
+
+                DECLARACION_JURADA odeclaracion = new DECLARACION_JURADA();
+                odeclaracion.postulante_id = ficha.postulante_id;
+                odeclaracion.fecha = ficha.fecha;
+                odeclaracion.firma = temporal_imagen.archivo;
+                context3.DECLARACION_JURADA.Add(odeclaracion);
+                context3.SaveChanges();
+
                 return Ok();
 
             }
@@ -244,24 +264,24 @@ namespace SIGED_API.Controllers
                 opostulante.archivo = uniqueFileName;
                 opostulante.descripcion = uniqueFileName;
                 opostulante.tipoarchivo = 1;
-                opostulante.modulo = 2;
+                opostulante.modulo = 3;
                 context3.TEMPORAL_IMAGEN.Add(opostulante);
                 context3.SaveChanges();
 
-                if (id > 0)
-                {
 
-                    var postulante = context3.DECLARACION_JURADA.FirstOrDefault(p => p.postulante_id == id);
-                    postulante.postulante_id= id;   
+                var postulante = context3.DECLARACION_JURADA.FirstOrDefault(p => p.postulante_id == id);
+                if (postulante != null) 
+                {
+                    postulante.postulante_id = id;
                     postulante.firma = uniqueFileName;
                     context3.Entry(postulante).State = EntityState.Modified;
                     context3.SaveChanges();
-                   
+
                 }
-                //else
-                //{
-                //    return BadRequest();
-                //}
+                else
+                {
+                    return BadRequest();
+                }
 
                 return Ok();
             }

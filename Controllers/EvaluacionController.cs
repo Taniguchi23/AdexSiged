@@ -112,22 +112,23 @@ namespace SIGED_API.Controllers
             if (evaluacionpost != null)
             {
 
-                evaluacion = context2.Postulante.
+
+                evaluacion = context2.EVALUACION.
                 Join(context2.DETALLE_EVALUACION,
-                p => p.postulante_id,
-                ai => ai.POSTULANTE_ID,
+                p => p.evaluacion_id,
+                ai => ai.EVALUACION_ID,
                 (p, ai) => new { p, ai }
                 )
-                .Join(context2.EVALUACION,
-                a => a.ai.EVALUACION_ID,
-                ai => ai.evaluacion_id,
+                .Join(context2.Postulante,
+                a => a.ai.POSTULANTE_ID,
+                ai => ai.postulante_id,
                 (a, ai) => new { a, ai }
-                ).Where(c => c.ai.especialidad_id == especialidad_id
+                ).Where(c => c.a.p.especialidad_id == especialidad_id
                 ).Select(res => new DetalleEvaluacion()
                 {
                     postulante_id = res.a.ai.POSTULANTE_ID,
-                    nombre_completo = res.a.p.ape_paterno + " " + res.a.p.ape_materno + " " + res.a.p.nombre,
-                    evaluacion_id = res.ai.evaluacion_id,
+                    nombre_completo = res.ai.ape_paterno + " " + res.ai.ape_materno + " " + res.ai.nombre,
+                    evaluacion_id = res.a.ai.EVALUACION_ID,
                     detalle_evaluacion_id = res.a.ai.DETALLE_EVALUACION_ID,
                     enc_estu = res.a.ai.ENC_ESTU,
                     cap_doc = res.a.ai.CAP_DOC,

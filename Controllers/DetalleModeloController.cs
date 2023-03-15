@@ -49,7 +49,7 @@ namespace SIGED_API.Controllers
 
             try
             {
-                var temporal_imagen = context2.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 3);
+                var temporal_imagen = context2.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 2);
 
                     Modelo ommodelo = new Modelo();
                     
@@ -64,7 +64,7 @@ namespace SIGED_API.Controllers
                 if (temporal_imagen != null)
                 {
 
-                    ommodelo.referencia = temporal_imagen.archivo;
+                    //ommodelo.referencia = temporal_imagen.archivo;
                     context2.TEMPORAL_IMAGEN.Remove(temporal_imagen);
                     context2.SaveChanges();
 
@@ -181,10 +181,12 @@ namespace SIGED_API.Controllers
                 opostulante.archivo = uniqueFileName;
                 opostulante.descripcion = uniqueFileName;
                 opostulante.tipoarchivo = 1;
-                opostulante.modulo = 3;
+                opostulante.modulo = 2;
                 context2.TEMPORAL_IMAGEN.Add(opostulante);
                 context2.SaveChanges();
                 return Ok();
+
+
             }
             catch (Exception ex)
             {
