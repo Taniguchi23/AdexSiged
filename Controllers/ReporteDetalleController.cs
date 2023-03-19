@@ -147,7 +147,7 @@ namespace SIGED_API.Controllers
 
 
 
-        [HttpPost("AdjuntarImagen/{id}")]
+     /*   [HttpPost("AdjuntarImagen/{id}")]
         public ActionResult PostImagen([FromForm] TemporalRequest temporal, int id)
         {
             try
@@ -179,10 +179,10 @@ namespace SIGED_API.Controllers
             {
                 return BadRequest();
             }
-        }
+        }*/
 
 
-        private string UploadedImageReporte(TemporalRequest temporal)
+  /*      private string UploadedImageReporte(TemporalRequest temporal)
         {
             string uniqueFileName = null;
             if (temporal.FrontArchivo != null)
@@ -197,7 +197,7 @@ namespace SIGED_API.Controllers
 
             }
             return uniqueFileName;
-        }
+        }*/
 
 
         [HttpGet("GetImageReporte/{id}")]

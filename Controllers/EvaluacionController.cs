@@ -7,6 +7,7 @@ using SIGED_API.Entity;
 using SIGED_API.Ficha;
 using SIGED_API.Models;
 using SIGED_API.Models.Request;
+using SIGED_API.Models.Response;
 using SIGED_API.Tools;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace SIGED_API.Controllers
 {
     [Route("api/evaluacion")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class EvaluacionController : ControllerBase
     {
 
@@ -96,7 +97,7 @@ namespace SIGED_API.Controllers
         //}
 
         // GET api/<EvaluacionController>/5
-        [HttpGet("Iniciar/{especialidad_id}")]
+     /*   [HttpGet("Iniciar/{especialidad_id}")]
         public IEnumerable<DetalleEvaluacion> GetIniciar(int especialidad_id)
         {
             List<DetalleEvaluacion> evaluacion = new List<DetalleEvaluacion>();
@@ -165,66 +166,81 @@ namespace SIGED_API.Controllers
            
             
           
-        }
+        }*/
 
         // POST api/<EvaluacionController>
         [HttpPost("Grabar")]
-        public ActionResult Post([FromBody] EvaluacionRequest evaluacion)
+        public Respuesta Post([FromBody] EvaluacionDetalleRequest evaluacionDetalleRequest)
         {
-            var result = new OkObjectResult(0);
+            var respuesta = new Respuesta();
+            respuesta.status = true;
 
-            try
+            if (evaluacionDetalleRequest != null && evaluacionDetalleRequest.flagTipo == "G")
             {
-                
-
-                var vevaluacion = context2.EVALUACION.FirstOrDefault(p => p.especialidad_id == evaluacion.especialidad_id);
-
-                if (vevaluacion != null)
+                foreach (detalleEvaluacion detalleEvaluacion in evaluacionDetalleRequest.detalle_evaluacion)
                 {
-                    result = new OkObjectResult(new { message = "Ya existe", status = true, status_reg = vevaluacion.estado,  EVALUACION = vevaluacion.evaluacion_id });
-                }
-
-                else
-                {
-                    EVALUACION oevaluacion = new EVALUACION();
-                    oevaluacion.especialidad_id = evaluacion.especialidad_id;
-                    //oevaluacion.coordinador_id = evaluacion.coordinador_id;
-                    oevaluacion.estado = false;
-                    oevaluacion.fecha = evaluacion.fecha;
-                    context2.EVALUACION.Add(oevaluacion);
-                    context2.SaveChanges();
-
-                   
-                    if (evaluacion.Detalle_evaluacion != null) 
-                    
-                    { 
-
-                    foreach (var odetalles in evaluacion.Detalle_evaluacion)
+                    var evaluacionPostulante = context2.DETALLE_EVALUACION.FirstOrDefault(d => d.POSTULANTE_ID == detalleEvaluacion.postulante_id && d.SEMESTRE_ID == evaluacionDetalleRequest.semestre_id);
+                    if (evaluacionPostulante != null)
                     {
-                        DETALLE_EVALUACION odetalle = new DETALLE_EVALUACION();
-                        odetalle.EVALUACION_ID = oevaluacion.evaluacion_id;
-                        odetalle.POSTULANTE_ID = odetalles.postulante_id;
-                        odetalle.ENC_ESTU = odetalles.enc_estu;
-                        odetalle.CUM_ADM = odetalles.cum_adm;
-                        odetalle.CAP_DOC = odetalles.cap_doc;
-                        odetalle.ACOM_DOC = odetalles.acom_doc;
-                        odetalle.CUM_VIR = odetalles.cum_adm;
-                        odetalle.NOTA_FINAL = odetalles.nota_final;
-
-                        context2.DETALLE_EVALUACION.Add(odetalle);
+                        if (evaluacionPostulante.ESTADO.Equals('G'))
+                        {
+                            evaluacionPostulante.ENC_ESTU = detalleEvaluacion.enc_estu;
+                            evaluacionPostulante.CUM_ADM = detalleEvaluacion.cum_adm;
+                            evaluacionPostulante.CAP_DOC = detalleEvaluacion.cap_doc;
+                            evaluacionPostulante.ACOM_DOC = detalleEvaluacion.acom_doc;
+                            evaluacionPostulante.CUM_VIR = detalleEvaluacion.cum_vir;
+                            evaluacionPostulante.NOTA_FINAL = detalleEvaluacion.nota_final;
+                            evaluacionPostulante.FECHA_GUARDADO = evaluacionDetalleRequest.fecha;
+                            evaluacionPostulante.EVALUADOR_ID = evaluacionDetalleRequest.evaluador_id;
+                            context2.Entry(evaluacionPostulante).State = EntityState.Modified;
+                            context2.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        var evaluaciondetalleTemp = new DETALLE_EVALUACION();
+                        evaluaciondetalleTemp.EVALUADOR_ID = evaluacionDetalleRequest.evaluador_id;
+                        evaluaciondetalleTemp.POSTULANTE_ID = detalleEvaluacion.postulante_id;
+                        evaluaciondetalleTemp.ENC_ESTU = detalleEvaluacion.enc_estu;
+                        evaluaciondetalleTemp.CUM_ADM = detalleEvaluacion.cum_adm;
+                        evaluaciondetalleTemp.CAP_DOC = detalleEvaluacion.cap_doc;
+                        evaluaciondetalleTemp.ACOM_DOC = detalleEvaluacion.acom_doc;
+                        evaluaciondetalleTemp.CUM_VIR = detalleEvaluacion.cum_vir;
+                        evaluaciondetalleTemp.NOTA_FINAL = detalleEvaluacion.nota_final;
+                        evaluaciondetalleTemp.FECHA_GUARDADO = evaluacionDetalleRequest.fecha;
+                        evaluaciondetalleTemp.ESTADO = 'G';
+                        evaluaciondetalleTemp.SEMESTRE_ID = evaluacionDetalleRequest.semestre_id;
+                        context2.DETALLE_EVALUACION.Add(evaluaciondetalleTemp);
                         context2.SaveChanges();
                     }
-                        result = new OkObjectResult(new { message = "OK", status = true, status_eva = oevaluacion.estado, evaluacion_id = oevaluacion.evaluacion_id });
-
+                }
+            }
+            else
+            {
+                foreach (detalleEvaluacion detalleEvaluacion in evaluacionDetalleRequest.detalle_evaluacion)
+                {
+                    var evaluacionPostulante = context2.DETALLE_EVALUACION.FirstOrDefault(d => d.POSTULANTE_ID == detalleEvaluacion.postulante_id && d.SEMESTRE_ID == evaluacionDetalleRequest.semestre_id);
+                    if (evaluacionPostulante != null)
+                    {
+                        if (evaluacionPostulante.ESTADO.Equals('G'))
+                        {
+                            evaluacionPostulante.ENC_ESTU = detalleEvaluacion.enc_estu;
+                            evaluacionPostulante.CUM_ADM = detalleEvaluacion.cum_adm;
+                            evaluacionPostulante.CAP_DOC = detalleEvaluacion.cap_doc;
+                            evaluacionPostulante.ACOM_DOC = detalleEvaluacion.acom_doc;
+                            evaluacionPostulante.CUM_VIR = detalleEvaluacion.cum_vir;
+                            evaluacionPostulante.NOTA_FINAL = detalleEvaluacion.nota_final;
+                            evaluacionPostulante.FECHA_REGISTRO = evaluacionDetalleRequest.fecha;
+                            evaluacionPostulante.EVALUADOR_ID = evaluacionDetalleRequest.evaluador_id;
+                            evaluacionPostulante.ESTADO = 'R';
+                            context2.Entry(evaluacionPostulante).State = EntityState.Modified;
+                            context2.SaveChanges();
+                        }
                     }
                 }
-                return result;
+            }
 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest();
-            }
+            return respuesta;
         }
 
         [HttpPut("statusEvaluacion")]
@@ -238,7 +254,7 @@ namespace SIGED_API.Controllers
         }
 
 
-        [HttpPut("ActualizarDetalle")]
+     /*   [HttpPut("ActualizarDetalle")]
         public ActionResult ActualizarDetalle([FromBody] EvaluacionRequest evaluacion)
         {
             foreach (var odetalles in evaluacion.Detalle_evaluacion)
@@ -258,7 +274,7 @@ namespace SIGED_API.Controllers
                 context2.SaveChanges();
             }
             return  new OkObjectResult(new { message = "OK", status = true,  evaluacion_id = evaluacion.evaluacion_id });
-        }
+        }*/
 
         [HttpGet("EstadoEvaluacion/{especialidad_id}")]
         public EVALUACION EstadoEvaluacion(int especialidad_id)

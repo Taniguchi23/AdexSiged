@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Protocols;
 using SIGED_API.Contexts;
 using SIGED_API.Entity;
 using SIGED_API.Models;
+using SIGED_API.Models.Response;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -280,28 +281,34 @@ namespace SIGED_API.Controllers
 
         // POST api/<SeleccionController>
         [HttpPost]
-        public int GrabarSeleccionCabecera([FromBody] Seleccion seleccion)
+        public Respuesta GrabarSeleccionCabecera([FromBody] Seleccion seleccion)
         {
+            var respuesta = new Respuesta();
+            respuesta.status = false;
             try
             {
                 var postulante = context.Seleccion_cabecera.FirstOrDefault(p => p.postulante_id == seleccion.postulante_id & p.semestre_id == seleccion.semestre_id & p.area_id == seleccion.area_id);
 
                 if (postulante  != null)
                 {
-                    return postulante.seleccion_id;
+                    respuesta.Data = "Ya existe la selección";
+                    return respuesta;
                 }
                 else
                 {
                     context.Seleccion_cabecera.Add(seleccion);
                     context.SaveChanges();
-                    return seleccion.seleccion_id;
+                    respuesta.status = true;
+                    respuesta.Data = "Seleccion creada";
+                    return respuesta;
                 }
                
                 
             }
             catch (Exception ex)
             {
-                return seleccion.seleccion_id;
+                respuesta.Data = "Error";
+                return respuesta;
                 //return BadRequest();
             }
 

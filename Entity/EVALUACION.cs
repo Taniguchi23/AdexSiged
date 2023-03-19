@@ -16,9 +16,5 @@ namespace SIGED_API.Entity
 
         public bool estado { get; set; }
 
-     
-
-
-
     }
 }

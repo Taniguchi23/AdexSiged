@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Web;
 using Microsoft.AspNetCore.Hosting;
 
 
@@ -23,6 +22,16 @@ using MimeKit.Text;
 using MimeKit;
 using SIGED_API.Ficha;
 using SIGED_API.Models.Request;
+using SIGED_API.Models.Response;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting.Server;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System.Globalization;
+using Microsoft.AspNetCore.Identity;
+using Org.BouncyCastle.Crypto.Generators;
+using SIGED_API.Helpers;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,7 +39,8 @@ namespace SIGED_API.Controllers
 {
     [Route("api/postulante")]
     [ApiController]
-    //[Authorize]
+
+
     public class PostulanteController : ControllerBase
     {
         private readonly AppDbContext context;
@@ -47,33 +57,155 @@ namespace SIGED_API.Controllers
             webHostEnviroment = webHost;
         }
 
-        // GET: api/<PostulanteController>
-        [HttpGet]
-
-        public IEnumerable<Postulante> Get()
+        [HttpPost]
+        public async Task<Respuesta> Post([FromForm] TemporalRequest temporalRequest)
         {
+            var respuesta = new Respuesta();
+            var listaErrores = new List<Error>();
+            respuesta.status = false;
+            var postulanteTemp = context.Postulante.FirstOrDefault(p => p.correo == temporalRequest.correo || p.numero == temporalRequest.numero);
+            if (postulanteTemp != null)
+            {
+                if (postulanteTemp.numero == temporalRequest.numero) listaErrores.Add(new Error() { Campo = "numero", Detalles = "El numero de documento ya existe" });
+                if (postulanteTemp.correo == temporalRequest.correo) listaErrores.Add(new Error() { Campo = "correo", Detalles = "El correo ya existe" });
+                respuesta.Data = listaErrores;
+                return respuesta;
+            }
 
-            try
+            if (temporalRequest.Archivo == null || temporalRequest.Archivo.Length == 0)
+                listaErrores.Add(new Error() { Campo = "archivo", Detalles = "No se ha enviado el campo archivo" });
+
+            if (temporalRequest.Imagen == null || temporalRequest.Imagen.Length == 0)
+                listaErrores.Add(new Error() { Campo = "imagen", Detalles = "No se ha enviado el campo imagen" });
+
+            if (temporalRequest.nombre == null)
+                listaErrores.Add(new Error() { Campo = "nombre", Detalles = "No se ha enviado el campo nombre" });
+
+            if (temporalRequest.ape_paterno == null)
+                listaErrores.Add(new Error() { Campo = "ape_paterno", Detalles = "No se ha enviado el campo ape_paterno" });
+
+            if (temporalRequest.ape_materno == null)
+                listaErrores.Add(new Error() { Campo = "ape_materno", Detalles = "No se ha enviado el campo ape_materno" });
+
+            if (temporalRequest.tipo_id == null)
+                listaErrores.Add(new Error() { Campo = "tipo_id", Detalles = "No se ha enviado el campo tipo_id" });
+
+            if (temporalRequest.numero == null)
+                listaErrores.Add(new Error() { Campo = "numero", Detalles = "No se ha enviado el campo numero" });
+
+            if (temporalRequest.fec_nacimiento == null)
+                listaErrores.Add(new Error() { Campo = "fec_nacimiento", Detalles = "No se ha enviado el campo fec_nacimiento" });
+
+            if (temporalRequest.celular == null)
+                listaErrores.Add(new Error() { Campo = "celular", Detalles = "No se ha enviado el campo celular" });
+
+            if (temporalRequest.correo == null)
+                listaErrores.Add(new Error() { Campo = "correo", Detalles = "No se ha enviado el campo correo" });
+
+            if (temporalRequest.contrasena == null)
+                listaErrores.Add(new Error() { Campo = "contrasena", Detalles = "No se ha enviado el campo contrasena" });
+
+            DateTime fecha;
+            if (temporalRequest.fec_nacimiento != null && !DateTime.TryParse(temporalRequest.fec_nacimiento, out fecha))
+                listaErrores.Add(new Error() { Campo = "fecha", Detalles = "el campo fecha no contiene un formato fecha" });
+
+            if (listaErrores.Count() > 0)
             {
-                return context.Postulante.ToList();
+                respuesta.Data = listaErrores;
+                return respuesta;
             }
-            catch (Exception ex)
+
+            DateTimeOffset fechaHoraActual = DateTimeOffset.UtcNow;
+            string directorioActual = Directory.GetCurrentDirectory();
+            var rutaGuardadoArchivo = directorioActual + "/files";
+            var rutaGuardadoImagen = directorioActual + "/images";
+
+            if (!Directory.Exists(rutaGuardadoArchivo))
             {
-                logger.LogInformation("Error" + ex.Message);
-                throw;
+                Directory.CreateDirectory(rutaGuardadoArchivo);
             }
+
+            if (!Directory.Exists(rutaGuardadoImagen))
+                Directory.CreateDirectory(rutaGuardadoImagen);
+
+
+            var nombreArch = Path.GetFileName(temporalRequest.Archivo.FileName);
+            var nombreArchivo = "cv_" + temporalRequest.numero + "_" + fechaHoraActual.ToUnixTimeMilliseconds() + "" + Path.GetExtension(nombreArch);
+            var rutaArchivo = Path.Combine(rutaGuardadoArchivo, nombreArchivo);
+
+            var nombreImag = Path.GetFileName(temporalRequest.Imagen.FileName);
+            var nombreImagen = "img_" + temporalRequest.numero + "_" + fechaHoraActual.ToUnixTimeMilliseconds() + "" + Path.GetExtension(nombreImag);
+            var rutaImagen = Path.Combine(rutaGuardadoImagen, nombreImagen);
+
+
+            using (var stream = new FileStream(rutaArchivo, FileMode.Create))
+            {
+                await temporalRequest.Archivo.CopyToAsync(stream);
+            }
+
+            using (var stream = new FileStream(rutaImagen, FileMode.Create))
+            {
+                await temporalRequest.Imagen.CopyToAsync(stream);
+            }
+
+            var postulante = new Postulante();
+            postulante.nombre = temporalRequest.nombre;
+            postulante.numero = temporalRequest.numero;
+            postulante.ape_paterno = temporalRequest.ape_paterno;
+            postulante.ape_materno = temporalRequest.ape_materno;
+            postulante.celular = temporalRequest.celular;
+            postulante.correo = temporalRequest.correo;
+            postulante.contrasena = Encrypt.GetSHA256(temporalRequest.contrasena);
+            postulante.tipo_id = int.Parse(temporalRequest.tipo_id);
+            postulante.fec_nacimiento = DateTime.Parse(temporalRequest.fec_nacimiento);
+            postulante.imageurl = nombreImagen;
+            postulante.rol_id = 4;
+            postulante.seleccion_id = 0;
+            postulante.archivocv = nombreArchivo;
+            await context.Postulante.AddAsync(postulante);
+            context.SaveChanges();
+
+            foreach (int id in temporalRequest.listaEspecialidades)
+            {
+                var especialidadPostulante = new Especialidad_postulante();
+                especialidadPostulante.especialidad_id = id;
+                especialidadPostulante.postulante_id = postulante.postulante_id;
+                await context.Especialidad_postulante.AddAsync(especialidadPostulante);
+                context.SaveChanges();
+            }
+
+            respuesta.status = true;
+            respuesta.Data = "Usuario creado exitosamente";
+
+            return respuesta;
+        }
+
+
+        // GET: api/<PostulanteController>
+        [HttpGet("listapostulantes")]
+
+        public  IEnumerable<Postulante> GetListaPostulante()
+        {
+            
+           return context.Postulante.Where(p => p.estado_contratado != true).ToList();
+               
+        }
+
+        // GET: api/<PostulanteController>
+        [HttpGet("listacontradados")]
+
+        public IEnumerable<Postulante> GetListaContratados()
+        {
+            return context.Postulante.Where(p => p.estado_contratado == true).ToList();
         }
 
         [HttpGet("{id}")]
         public Postulante Get(int id)
         {
-
-            
             Postulante postulante = new Postulante();
-
             postulante = context.Seleccion_cabecera.Join(context.Postulante,
                sd => sd.postulante_id,
-               r => r.postulante_id,    
+               r => r.postulante_id,
                (sd, r) => new { sd, r }
                ).Where(c => c.sd.postulante_id == id)
                .Select(res => new Postulante()
@@ -92,7 +224,7 @@ namespace SIGED_API.Controllers
                    archivocv = res.r.archivocv,
                    rol_id = res.r.rol_id,
                    seleccion_id = res.sd.seleccion_id,
-                   correo= res.r.correo,
+                   correo = res.r.correo,
                    estado = res.r.estado,
                    estado_contratado = res.r.estado_contratado
 
@@ -101,11 +233,11 @@ namespace SIGED_API.Controllers
 
             if (postulante == null)
             {
-                 postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
+                postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
 
 
             }
-                    
+
 
             return postulante;
         }
@@ -144,191 +276,78 @@ namespace SIGED_API.Controllers
         }
 
 
-        [HttpPost]
-        public ActionResult Post([FromBody] PostulanteRequest postulante)
-        {
-            var result = new OkObjectResult(0);
-            try
+
+
+        /*    [HttpPost("AdjuntarImagen/{id}")]
+            public ActionResult PostImagen([FromForm] TemporalRequest temporal, int id)
             {
-
-                List<Postulante> postulanteList = new List<Postulante>();
-
-                postulanteList = context.Postulante.ToList();
-
-                bool valorcorreo, valornumero;
-
-
-                valorcorreo = Validarcorreo(postulante.correo, postulanteList);
-                valornumero = Validarnumero(postulante.numero, postulanteList);
-
-
-                if (valorcorreo == false)
+                try
                 {
-
-                    result = new OkObjectResult(new { message = "Ya existe correo", status = false });
-
-                }
-
-                else if (valornumero == false)
-                {
-
-                    result = new OkObjectResult(new { message = "Ya existe numero", status = false });
-
-                }
-
-                else
-                {
-
-                var temporal_imagen = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 1);
-
-                var temporal_archivo = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 2 & p.modulo == 1);
-
-                Postulante opostulante = new Postulante();
-                opostulante.nombre = postulante.nombre;
-                opostulante.ape_paterno = postulante.ape_paterno;
-                opostulante.ape_materno = postulante.ape_materno;
-                opostulante.tipo_id = postulante.tipo_id;
-                opostulante.numero = postulante.numero;
-                opostulante.fec_nacimiento = postulante.fec_nacimiento;
-                opostulante.celular = postulante.celular;
-                opostulante.correo = postulante.correo;
-                opostulante.contrasena = Encrypt.GetSHA256(postulante.contrasena);
-                opostulante.rep_contrasena = Encrypt.GetSHA256(postulante.rep_contrasena);
-                opostulante.rol_id = 4;
-
-                if (temporal_imagen != null)
-                {
-
-                    opostulante.imageurl = temporal_imagen.archivo;
-                    context.TEMPORAL_IMAGEN.Remove(temporal_imagen);
+                    TEMPORAL_IMAGEN opostulante = new TEMPORAL_IMAGEN();
+                    string uniqueFileName = UploadedImagePostulante(temporal);
+                    opostulante.archivo = uniqueFileName;
+                    opostulante.descripcion = uniqueFileName;
+                    opostulante.tipoarchivo = 1;
+                    opostulante.modulo = 1;
+                    context.TEMPORAL_IMAGEN.Add(opostulante);
                     context.SaveChanges();
 
-                }
-                if (temporal_archivo != null)
-                {
-                    opostulante.archivocv = temporal_imagen.archivo;
-                    context.TEMPORAL_IMAGEN.Remove(temporal_archivo);
-                    context.SaveChanges();
+                    if (id > 0)
+                    {
 
-                }
-               
+                        var postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
 
-                if (postulante.postulante_id != 0)
-                {
-                    opostulante.postulante_id = postulante.postulante_id;
-                    context.Entry(opostulante).State = EntityState.Modified;
-                    context.SaveChanges();
-
-                }
-                else
-                {
-                    context.Postulante.Add(opostulante);
-                    context.SaveChanges();
-
-                }
-
-                foreach (var oPostEspecialidad in postulante.Especialidades)
-                {
-                    var especialidad = context.Especialidad_postulante.FirstOrDefault(p =>  p.postulante_id == postulante.postulante_id & p.especialidad_id == oPostEspecialidad.especialidad_id) ;
-
-                    Especialidad_postulante oespecialidad = new Especialidad_postulante();
-
-                    if (especialidad != null)
-                        {
-                            oespecialidad.especialidad_post_id = especialidad.especialidad_post_id;
-                            context.Especialidad_postulante.Remove(especialidad);
-                            context.SaveChanges(); 
-                        }
-
-                        oespecialidad.especialidad_post_id = 0;
-                        oespecialidad.postulante_id = opostulante.postulante_id;
-                        oespecialidad.especialidad_id = oPostEspecialidad.especialidad_id;
-                        context.Especialidad_postulante.Add(oespecialidad);
+                        postulante.imageurl = uniqueFileName;
+                        context.Entry(postulante).State = EntityState.Modified;
                         context.SaveChanges();
+                        return Ok();
                     }
-
-                    result = new OkObjectResult(new { message = "OK", status = true, postulante_id = opostulante.postulante_id });
-
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
-                return result;
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest();
-            }
-        }
-
-        [HttpPost("AdjuntarImagen/{id}")]
-        public ActionResult PostImagen([FromForm] TemporalRequest temporal, int id)
-        {
-            try
-            {
-                TEMPORAL_IMAGEN opostulante = new TEMPORAL_IMAGEN();
-                string uniqueFileName = UploadedImagePostulante(temporal);
-                opostulante.archivo = uniqueFileName;
-                opostulante.descripcion = uniqueFileName;
-                opostulante.tipoarchivo = 1;
-                opostulante.modulo = 1;
-                context.TEMPORAL_IMAGEN.Add(opostulante);
-                context.SaveChanges();
-
-                if (id > 0)
-                {
-                    
-                    var postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
-                   
-                    postulante.imageurl = uniqueFileName;
-                    context.Entry(postulante).State = EntityState.Modified;
-                    context.SaveChanges();
-                    return Ok();
-                }
-                else
+                catch (Exception ex)
                 {
                     return BadRequest();
                 }
-            }
-            catch (Exception ex)
+            }*/
+
+
+        /*    [HttpPost("AdjuntarArchivo/{id}")]
+            public ActionResult PostARchivo([FromForm] TemporalRequest temporal, int id)
             {
-                return BadRequest();
-            }
-        }
-
-
-        [HttpPost("AdjuntarArchivo/{id}")]
-        public ActionResult PostARchivo([FromForm] TemporalRequest temporal, int id)
-        {
-            try
-            {
-                TEMPORAL_IMAGEN opostulante = new TEMPORAL_IMAGEN();
-                string uniqueFileName = UploadedFilePostulante(temporal);
-                opostulante.archivo = uniqueFileName;
-                opostulante.descripcion = uniqueFileName;
-                opostulante.tipoarchivo = 2;
-                opostulante.modulo = 1;
-                context.TEMPORAL_IMAGEN.Add(opostulante);
-                context.SaveChanges();
-                //return Ok();
-
-
-                if (id > 0)
+                try
                 {
-                    var postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
-                    postulante.archivocv = uniqueFileName;
-                    context.Entry(postulante).State = EntityState.Modified;
+                    TEMPORAL_IMAGEN opostulante = new TEMPORAL_IMAGEN();
+                    string uniqueFileName = UploadedFilePostulante(temporal);
+                    opostulante.archivo = uniqueFileName;
+                    opostulante.descripcion = uniqueFileName;
+                    opostulante.tipoarchivo = 2;
+                    opostulante.modulo = 1;
+                    context.TEMPORAL_IMAGEN.Add(opostulante);
                     context.SaveChanges();
-                    return Ok();
+                    //return Ok();
+
+
+                    if (id > 0)
+                    {
+                        var postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
+                        postulante.archivocv = uniqueFileName;
+                        context.Entry(postulante).State = EntityState.Modified;
+                        context.SaveChanges();
+                        return Ok();
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
                     return BadRequest();
                 }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest();
-            }
-        }
+            }*/
 
         [HttpPut("statusPostulante")]
         public ActionResult ActualizarEstado([FromBody] Models.Request.Postulante postulante)
@@ -377,10 +396,11 @@ namespace SIGED_API.Controllers
             opostulante.fec_nacimiento = postulante.fec_nacimiento;
             opostulante.celular = postulante.celular;
             opostulante.correo = postulante.correo;
-          
-            if (postulante.contrasena != null) {
 
-                opostulante.contrasena =  Encrypt.GetSHA256(postulante.contrasena);
+            if (postulante.contrasena != null)
+            {
+
+                opostulante.contrasena = Encrypt.GetSHA256(postulante.contrasena);
             }
             else
             {
@@ -408,23 +428,23 @@ namespace SIGED_API.Controllers
 
                 var especialidad = context.Especialidad_postulante.ToList().Where((c => c.postulante_id == postulante.postulante_id));
 
-            Especialidad_postulante oespecialidad = new Especialidad_postulante();
+                Especialidad_postulante oespecialidad = new Especialidad_postulante();
 
                 if (especialidad != null)
                 {
 
-                foreach (var especialidadespostulante in especialidad)
-                {
-
-                    var especialidadespecial = context.Especialidad_postulante.FirstOrDefault(p => p.especialidad_post_id == especialidadespostulante.especialidad_post_id);
-                    //oespecialidad.especialidad_post_id = especialidadespostulante.especialidad_post_id;
-                    context.Especialidad_postulante.Remove(especialidadespecial);
-                    context.SaveChanges();
-                }
-
-                foreach (var oPostEspecialidade in postulante.Especialidades)
+                    foreach (var especialidadespostulante in especialidad)
                     {
-                       
+
+                        var especialidadespecial = context.Especialidad_postulante.FirstOrDefault(p => p.especialidad_post_id == especialidadespostulante.especialidad_post_id);
+                        //oespecialidad.especialidad_post_id = especialidadespostulante.especialidad_post_id;
+                        context.Especialidad_postulante.Remove(especialidadespecial);
+                        context.SaveChanges();
+                    }
+
+                    foreach (var oPostEspecialidade in postulante.Especialidades)
+                    {
+
                         oespecialidad.especialidad_post_id = 0;
                         oespecialidad.postulante_id = postulante.postulante_id;
                         oespecialidad.especialidad_id = oPostEspecialidade.especialidad_id;
@@ -432,7 +452,7 @@ namespace SIGED_API.Controllers
                         context.SaveChanges();
                     }
 
-                  
+
                 }
 
             }
@@ -473,39 +493,39 @@ namespace SIGED_API.Controllers
             return "OK";
         }
 
-        private string UploadedImagePostulante(TemporalRequest temporal)
-        {
-            string uniqueFileName = null;
-            if (temporal.FrontArchivo != null)
-            {
-                string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "images");
-                uniqueFileName = temporal.FrontArchivo.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    temporal.FrontArchivo.CopyTo(fileStream);
-                }
+        /*   private string UploadedImagePostulante(TemporalRequest temporal)
+           {
+               string uniqueFileName = null;
+               if (temporal.FrontArchivo != null)
+               {
+                   string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "images");
+                   uniqueFileName = temporal.FrontArchivo.FileName;
+                   string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                   using (var fileStream = new FileStream(filePath, FileMode.Create))
+                   {
+                       temporal.FrontArchivo.CopyTo(fileStream);
+                   }
 
-            }
-            return uniqueFileName;
-        }
+               }
+               return uniqueFileName;
+           }*/
 
-        private string UploadedFilePostulante(TemporalRequest temporal)
-        {
-            string uniqueFileName = null;
-            if (temporal.FrontArchivo != null)
-            {
-                string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "files");
-                uniqueFileName =  temporal.FrontArchivo.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    temporal.FrontArchivo.CopyTo(fileStream);
-                }
+        /*  private string UploadedFilePostulante(TemporalRequest temporal)
+          {
+              string uniqueFileName = null;
+              if (temporal.FrontArchivo != null)
+              {
+                  string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "files");
+                  uniqueFileName =  temporal.FrontArchivo.FileName;
+                  string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                  using (var fileStream = new FileStream(filePath, FileMode.Create))
+                  {
+                      temporal.FrontArchivo.CopyTo(fileStream);
+                  }
 
-            }
-            return uniqueFileName;
-        }
+              }
+              return uniqueFileName;
+          }*/
 
         private bool Validarcorreo(string correo, List<Postulante> postulantes)
         {
@@ -559,6 +579,169 @@ namespace SIGED_API.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        [HttpGet("detalle/{id}")]
+        [Authorize]
+        public async Task<Respuesta> GetDetallePostulante([FromRoute] int id)
+        {
+            var response = new Respuesta();
+            response.status = true;
+            var postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == id);
+
+            if (postulante == null)
+            {
+                response.status = false;
+                response.Data = "El ID del postulante no existe";
+            }
+            else
+            {
+                var seleccion = context.Seleccion_cabecera.FirstOrDefault(s => s.postulante_id == id);
+                var postulanteDetalle = new PostulanteDetalle();
+                postulanteDetalle.IdPostulante = id;
+                postulanteDetalle.NombrePostulante = postulante.nombre;
+                postulanteDetalle.ApellidoPostulante = postulante.ape_paterno + " " + postulante.ape_materno;
+                if (seleccion != null)
+                {
+                    postulanteDetalle.FlagSeleccion = true;
+                    postulanteDetalle.IdSeleccion = seleccion.area_id;
+                    postulanteDetalle.IdSemestre = seleccion.semestre_id;
+                    postulanteDetalle.IdPreguntaSeleccion = seleccion.seleccion_id;
+
+
+                }
+                else
+                {
+                    postulanteDetalle.FlagSeleccion = false;
+                }
+
+                var listaEspecialidadPostulanteInt = context.Especialidad_postulante.Where(e => e.postulante_id == id).ToList();
+                var listaEspecialidadPostulante = new List<Especialidad>();
+                foreach (Especialidad_postulante especialidadPost in listaEspecialidadPostulanteInt)
+                {
+                    var especialidad = context.Especialidad.FirstOrDefault(e => e.especialidad_id == especialidadPost.especialidad_id && e.estado == true);
+                    if (especialidad != null) listaEspecialidadPostulante.Add(especialidad);
+                }
+                postulanteDetalle.ListaEspecialidadesPostulante = listaEspecialidadPostulante;
+                postulanteDetalle.ListaSemestre = context.Semestre.ToList();
+
+                //var listaEspecialidades = context.Especialidad.Where(e => e.estado == true);
+                var SelectListaEspecialidades = new List<DetalleEspecialidades>();
+
+                foreach (Especialidad esp in listaEspecialidadPostulante)
+                {
+                    var cursos = context.Especialidad_cursos.Where(c => c.Especialidad_id == esp.especialidad_id).ToList();
+                    var DetalleEspecialidades = new DetalleEspecialidades();
+                    DetalleEspecialidades.Especialidad = esp;
+                    DetalleEspecialidades.Cursos = cursos;
+                    SelectListaEspecialidades.Add(DetalleEspecialidades);
+                }
+                postulanteDetalle.SelectListaEspecialidades = SelectListaEspecialidades;
+                response.Data = postulanteDetalle;
+            }
+
+
+
+            return response;
+        }
+
+        [HttpGet("lista/semestre/{id}")]
+        public async Task<Respuesta> GetListaPostulanteBySemestre([FromRoute] int id)
+        {
+            var respuesta = new Respuesta();
+            respuesta.status = false;
+            var semestresTemp = context.Semestre.FirstOrDefault(s => s.semestre_id == id);
+            if (semestresTemp == null)
+            {
+                respuesta.Data = "El semestre no existe";
+                return respuesta;
+            }
+
+            var sql = from p in context.Postulante
+                      join s in context.Seleccion_cabecera on p.postulante_id equals s.postulante_id
+                      //join e in context.DETALLE_EVALUACION on p.postulante_id equals e.POSTULANTE_ID
+                      where p.estado_contratado == true && s.semestre_id.Equals(id)
+                      select new 
+                      {
+                          postulante_id = p.postulante_id,
+                          nombre = p.nombre,
+                          ape_paterno = p.ape_paterno,
+                          ape_materno = p.ape_materno,
+                          correo = p.correo,
+                          seleccion_id = s.seleccion_id,
+                          rol_id = p.rol_id,
+                          estado_contratado = p.estado_contratado,
+                      };
+            var listaPostulantes = new List<PostulanteEvaluacion>();
+           foreach ( var item in sql ) {
+                var evaluacion = context.DETALLE_EVALUACION.FirstOrDefault(d => d.POSTULANTE_ID == item.postulante_id);
+                var postulante = new PostulanteEvaluacion();
+                postulante.postulante_id = item.postulante_id;
+                postulante.nombre = item.nombre;
+                postulante.ape_paterno = item.ape_paterno;
+                postulante.ape_materno = item.ape_materno;
+                postulante.correo = item.correo;
+                postulante.seleccion_id = item.seleccion_id;
+                postulante.rol_id = item.rol_id;
+                postulante.estado_contratado = item.estado_contratado;
+
+
+
+                if (evaluacion != null)
+                {
+                    postulante.flagTipo = ""+evaluacion.ESTADO;
+                    postulante.detalle_evaluacion_id = evaluacion.DETALLE_EVALUACION_ID;                 
+                    postulante.enc_estu = evaluacion.ENC_ESTU;
+                    postulante.cum_adm = evaluacion.CUM_ADM;
+                    postulante.acom_doc = evaluacion.ACOM_DOC;
+                    postulante.cap_doc = evaluacion.CAP_DOC;
+                    postulante.cum_vir = evaluacion.CUM_VIR;
+                    postulante.nota_final = evaluacion.NOTA_FINAL;
+                }
+                listaPostulantes.Add( postulante );
+            }
+            
+            respuesta.status = true;
+            respuesta.Data = listaPostulantes;
+
+            return respuesta;
+        }
+
+        [HttpPost("recuperarClave")]
+        public Respuesta RecuperarClave([FromBody] RecuperarClaveRequest recuperarClaveRequest)
+        {
+            var respuesta = new Respuesta();
+            respuesta.status = false;
+            var postulante = context.Postulante.FirstOrDefault(p => p.correo == recuperarClaveRequest.email);
+            if (postulante == null)
+            {
+                respuesta.Data = "No existe el email";
+                return respuesta;
+            }
+            var email = new MimeMessage();
+
+            email.From.Add(MailboxAddress.Parse("ronald.livia@outlook.com"));
+            email.To.Add(MailboxAddress.Parse(postulante.correo));
+            email.Subject = "ADEX: Recuparación de contraseña";
+            var html = "<p>      Estimado/a postulante,    </p>    " +
+                "<p>      De nuestra mayor consideración,    </p>   " +
+                " <p>      Desde ya, esperamos que se encuentre bien de salud al igual que sus seres queridos.     </p>   " +
+                " <p> <b>     Usted ha solicitado una recuperación de su contraseña y para ello le enviamos el siguiente link donde podrá hacer el cambio.   </b> </p> < br > " +
+                recuperarClaveRequest.ruta + "?code="+Encryption.EncryptMessage(postulante.postulante_id+"@"+postulante.correo)+ 
+
+                "  <p>      Si usted no ha solicitado una recuperación de contraseña, comuníquese inmediatamente a 941488793los principales cursos que dictaría, así como los que, en base a la experiencia profesional adquirida, podrían dictar, señalar con una “X” su disponibilidad para el dictado del curso para el Semestre $PARAM_SEMESTRE, según los siguientes turnos:     </p>   ";
+              
+              
+            email.Body = new TextPart(TextFormat.Html) { Text = html };
+
+            using var smtp = new MailKit.Net.Smtp.SmtpClient();
+            smtp.Connect("smtp.office365.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate("ronald.livia@outlook.com", "Yama314162$");
+            smtp.Send(email);
+            smtp.Disconnect(true);
+
+
+            return respuesta;
         }
     }
 }

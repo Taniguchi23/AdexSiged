@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SIGED_API.Contexts;
 using SIGED_API.Entity;
+using SIGED_API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -126,5 +128,7 @@ namespace SIGED_API.Controllers
             }
 
         }
+
+        
     }
 }

@@ -30,9 +30,7 @@ namespace SIGED_API.Controllers
         [HttpGet]
         public IEnumerable<Semestre> Get()
         {
-
-            return context.Semestre.ToList();
-
+            return context.Semestre.Where(s => s.estado == true).ToList();
         }
 
         // GET api/<SemestreController>/5

@@ -7300,19 +7300,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\DELL\\.nuget\\packages\\": {}
+    "C:\\Users\\Sonny\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Ronald\\ADEX\\Web - copia\\SIGED-API.csproj",
+      "projectUniqueName": "D:\\Personal\\Taniguchi\\Proyecto2023\\SIGED\\Repositorio\\SIGED-API.csproj",
       "projectName": "SIGED-API",
-      "projectPath": "C:\\Ronald\\ADEX\\Web - copia\\SIGED-API.csproj",
-      "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-      "outputPath": "C:\\Ronald\\ADEX\\Web - copia\\obj\\",
+      "projectPath": "D:\\Personal\\Taniguchi\\Proyecto2023\\SIGED\\Repositorio\\SIGED-API.csproj",
+      "packagesPath": "C:\\Users\\Sonny\\.nuget\\packages\\",
+      "outputPath": "D:\\Personal\\Taniguchi\\Proyecto2023\\SIGED\\Repositorio\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Sonny\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -7396,7 +7396,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
       }
     }
   }

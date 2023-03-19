@@ -171,7 +171,7 @@ namespace SIGED_API.Controllers
         //}
 
 
-        [HttpPost("AdjuntarImagen/{id}")]
+   /*     [HttpPost("AdjuntarImagen/{id}")]
         public ActionResult PostImagen([FromForm] TemporalRequest temporal)
         {
             try
@@ -192,7 +192,7 @@ namespace SIGED_API.Controllers
             {
                 return BadRequest();
             }
-        }
+        }*/
 
         // DELETE api/<DetalleModeloController>/5
         //[HttpDelete("{id}")]
@@ -200,7 +200,7 @@ namespace SIGED_API.Controllers
         //{
         //}
 
-        private string UploadedFileModelo(TemporalRequest temporal)
+       /* private string UploadedFileModelo(TemporalRequest temporal)
         {
             string uniqueFileName = null;
             if (temporal.FrontArchivo != null)
@@ -215,6 +215,6 @@ namespace SIGED_API.Controllers
 
             }
             return uniqueFileName;
-        }
+        }*/
     }
 }

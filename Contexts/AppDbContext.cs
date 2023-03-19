@@ -99,6 +99,8 @@ namespace SIGED_API.Contexts
         public DbSet<TIPO_DOCUMENTO> TIPO_DOCUMENTO { get; set; }
 
         public DbSet<ENVIAR_CORREO> ENVIAR_CORREO { get; set; }
+        public DbSet<Especialidad_cursos> Especialidad_cursos { get; set; }
+        public DbSet<DETALLE_EVALUACION> DETALLE_EVALUACION { get; set; }
 
     }
 }

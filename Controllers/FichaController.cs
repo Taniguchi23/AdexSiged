@@ -237,7 +237,7 @@ namespace SIGED_API.Controllers
             return null;
         }
 
-        private string UploadedImagePostulante(TemporalRequest temporal)
+    /*    private string UploadedImagePostulante(TemporalRequest temporal)
         {
             string uniqueFileName = null;
             if (temporal.FrontArchivo != null)
@@ -252,9 +252,9 @@ namespace SIGED_API.Controllers
 
             }
             return uniqueFileName;
-        }
+        }*/
 
-        [HttpPost("AdjuntarImagen/{id}")]
+    /*   [HttpPost("AdjuntarImagen/{id}")]
         public ActionResult PostImagen([FromForm] TemporalRequest temporal, int id)
         {
             try
@@ -289,7 +289,7 @@ namespace SIGED_API.Controllers
             {
                 return BadRequest();
             }
-        }
+        }*/
 
         // PUT api/<FichaController>/5
         //[HttpPut("{id}")]
