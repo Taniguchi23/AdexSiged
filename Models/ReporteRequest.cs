@@ -15,15 +15,15 @@ namespace SIGED_API.Models
 
         public DateTime fecha { get; set; }
 
-        public int cal_rutina1 { get; set; }
+        public Decimal? cal_rutina1 { get; set; }
 
-        public int cal_rutina2 { get; set; }
+        public Decimal? cal_rutina2 { get; set; }
 
-        public int cal_rutina3 { get; set; }
+        public Decimal? cal_rutina3 { get; set; }
 
-        public int cal_rutina4 { get; set; }
+        public Decimal? cal_rutina4 { get; set; }
 
-        public int nota_final { get; set; }
+        public Decimal? nota_final { get; set; }
 
         public string observaciones { get; set; }
 

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NoQ/m23D1ZdiTnpBKBWRi6KlaHLX/M0m1s1PhNZLKiw9FJk/ofTkHBc+1kHUHI6uWR9XVqdhKZvZVwZ8m02xZQ==",
+  "dgSpecHash": "X7aJX5VrZ7KseYQrW+LLrN35L4XmORQ5SNoDQuFeGpHcN9HPlbwYhimyRQ6wvlzQl0LWNyMLG+ExY0XZ8L5CgQ==",
   "success": true,
-  "projectFilePath": "D:\\Personal\\Taniguchi\\Proyecto2023\\SIGED\\Repositorio\\SIGED-API.csproj",
+  "projectFilePath": "D:\\Personal\\Taniguchi\\Proyecto2023\\ADEX-SIGED\\Codigo\\SIGED\\Repositorio\\SIGED-API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Sonny\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Sonny\\.nuget\\packages\\mailkit\\3.5.0\\mailkit.3.5.0.nupkg.sha512",

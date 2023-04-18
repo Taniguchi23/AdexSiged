@@ -63,6 +63,8 @@ namespace SIGED_API.Ficha
         public int  area_id { get; set; }
 
         public int  referido_linkedin { get; set; }
+        public bool  referido_indeed { get; set; }
+        public bool  referido { get; set; }
 
         public string ? otros_medio { get; set; }
 

@@ -31,7 +31,8 @@ namespace SIGED_API.Controllers
 
         private IUserService _userService;
 
-        public string url = "http://10.31.1.37/ApiAutenticationAD/api/auth/login";
+        //public string url = "http://10.31.1.37/ApiAutenticationAD/api/auth/login";
+        public string url = "http://apiloginccaa.adexperu.edu.pe/api/auth/login";
 
         //public LoginController(AppDbContext context)
         //{
@@ -115,15 +116,20 @@ namespace SIGED_API.Controllers
 
                     userrequest.nombre = roles.fullname;
                     userrequest.usuario = login.correo;
-                    userrequest.rol_id = roles.rol;
-                    userrequest.Rol = roles.descripcion;
+                    userrequest.rol_id = (int)roles.subRol;
+                    userrequest.Rol = roles.descripcionSubRol;
                     userrequest.mensaje = roles.message;
                     userrequest.token = userresponseadmin.token;
+                    userrequest.correo = roles.correo;
+                    userrequest.user = roles.user;
+                    userrequest.id = (int)roles.id;
+                    userrequest.subRol = (int)roles.subRol;
+                    userrequest.descripcionSubRol = roles.descripcionSubRol;                     
 
-                    //if (roles.status is true)
-                    //{
+        //if (roles.status is true)
+        //{
 
-                        respuesta.status = true;
+        respuesta.status = true;
                         respuesta.Data = userrequest;
                         return Ok(respuesta);
                     //}

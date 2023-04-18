@@ -11,6 +11,7 @@ using MailKit.Net.Smtp;
 using System;
 using SIGED_API.Models;
 using SIGED_API.Ficha;
+using SIGED_API.Helpers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,7 +19,7 @@ namespace SIGED_API.Controllers
 {
     [Route("api/notificacion")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class NotificacionController : ControllerBase
     {
 
@@ -98,11 +99,11 @@ namespace SIGED_API.Controllers
                 email.From.Add(MailboxAddress.Parse(vnotificacion.destinatario));
                 email.To.Add(MailboxAddress.Parse(vpostulante.correo));
                 email.Subject = vnotificacion.asunto;
-                email.Body = new TextPart(TextFormat.Html) { Text = "<p>¡Queremos darte la bienvenida a la Plana docente del Instituto ADEX y decirte que, estamos seguros que tu profesionalismo aportará a nuestra institución en favor de la educación y el aprendizaje!</p><p> A fin de iniciar actividades de capacitación e inducción docente, se le informa lo siguiente:</p> <p>  1. Pongo en copia al área de Soporte TI y Programación Académica a fin de activar sus accesos a las plataformas: Licencia Zoom, Aula Virtual e Intranet (Power Campus). Adjuntamos el formato de disponibilidad con sus datos iniciales.</p>  <p>   2. Usted iniciará actividades académicas a partir del día " + notificacion.fecha_actividad.ToString("dddd") + " " + notificacion.fecha_actividad.ToString("dd") + " de " + notificacion.fecha_actividad.ToString("MMMM") + ". En los próximos días se le informará sobre su programación horaria, la misma que podrá visualizar en el sistema Power Campus.</p><p>  3. Se le agregará al grupo de WhatsApp \"Súper Docente ADEX\" que tiene como fin compartir información sobre buenas prácticas docentes.</p><p> 4. Se le inscribirá al curso Gimnasio Virtual Docente en el Aula Virtual (habilitado del " + notificacion.fecha_desde.ToString("dd") + " " + notificacion.fecha_desde.ToString("MMMM") + " al  " + notificacion.fecha_hasta.ToString("dd") + " " + notificacion.fecha_hasta.ToString("MMMM") + ") y a un curso de prueba donde podrá poner en práctica lo aprendido a fin de que pueda dominar las plataformas de ADEX.</p><p> Saludos cordiales </p><p><b> Gestión Docente</b></p>" };
+                email.Body = new TextPart(TextFormat.Html) { Text = "<p>¡Queremos darte la bienvenida a la Plana docente del Instituto ADEX y decirte que, estamos seguros que tu profesionalismo aportará a nuestra institución en favor de la educación y el aprendizaje!</p><p> A fin de iniciar actividades de capacitación e inducción docente, se le informa lo siguiente:</p> <p>  1. Pongo en copia al área de Soporte TI y Programación Académica a fin de activar sus accesos a las plataformas: Licencia Zoom, Aula Virtual e Intranet (Power Campus). Adjuntamos el formato de disponibilidad con sus datos iniciales.</p>  <p>   2. Usted iniciará actividades académicas a partir del día " + notificacion.fecha_actividad.ToString("dddd") + " " + notificacion.fecha_actividad.ToString("dd") + " de " + notificacion.fecha_actividad.ToString("MMMM").ToLower() + ". En los próximos días se le informará sobre su programación horaria, la misma que podrá visualizar en el sistema Power Campus.</p><p>  3. Se le agregará al grupo de WhatsApp \"Súper Docente ADEX\" que tiene como fin compartir información sobre buenas prácticas docentes.</p><p> 4. Se le inscribirá al curso Gimnasio Virtual Docente en el Aula Virtual (habilitado del " + notificacion.fecha_desde.ToString("dd") + " " + notificacion.fecha_desde.ToString("MMMM").ToLower() + " al  " + notificacion.fecha_hasta.ToString("dd") + " " + notificacion.fecha_hasta.ToString("MMMM").ToLower() + ") y a un curso de prueba donde podrá poner en práctica lo aprendido a fin de que pueda dominar las plataformas de ADEX.</p><p> Saludos cordiales </p><p><b> Gestión Docente</b></p>" };
 
                 using var smtp = new MailKit.Net.Smtp.SmtpClient();
-                smtp.Connect("smtp.office365.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                smtp.Authenticate("ronald.livia@outlook.com", "Yama314162$");
+                smtp.Connect(Settings.smtp, Settings.puerto, MailKit.Security.SecureSocketOptions.StartTls);
+                smtp.Authenticate(Settings.email, Settings.password);
                 smtp.Send(email);
                 smtp.Disconnect(true);
 
@@ -135,8 +136,8 @@ namespace SIGED_API.Controllers
             email.Body = new TextPart(TextFormat.Html) { Text = vnotificacion.mensaje };
 
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
-            smtp.Connect("smtp.office365.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate("ronald.livia@outlook.com", "Yama314162$");
+            smtp.Connect(Settings.smtp, Settings.puerto, MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate(Settings.email, Settings.password);
             smtp.Send(email);
             smtp.Disconnect(true);
             return "OK";
@@ -157,8 +158,8 @@ namespace SIGED_API.Controllers
             email.Body = new TextPart(TextFormat.Html) { Text = vnotificacion.mensaje };
 
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
-            smtp.Connect("smtp.office365.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate("ronald.livia@outlook.com", "Yama314162$");
+            smtp.Connect(Settings.smtp, Settings.puerto, MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate(Settings.email, Settings.password);
             smtp.Send(email);
             smtp.Disconnect(true);
             return "OK";

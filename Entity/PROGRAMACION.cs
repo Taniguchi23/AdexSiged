@@ -6,11 +6,13 @@ namespace SIGED_API.Entity
     public class PROGRAMACION
     {
         [Key]
-        public int programacion_id { get; set; }
+        public int? PROGRAMACION_ID { get; set; }
 
-        public int postulante_id { get; set; }
+        public int POSTULANTE_ID { get; set; }
 
-        public DateTime fecha { get; set; }
+        public DateTime FECHA { get; set; }
+        public DateTime CREATED_AT { get; set; }
+        public string? ESTADO { get; set; }
 
     }
 }

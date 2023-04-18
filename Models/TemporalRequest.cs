@@ -20,7 +20,7 @@ namespace SIGED_API.Models
         public string? rep_contrasena { get; set; }
         public IFormFile? Imagen { get; set; }
         public IFormFile? Archivo { get; set; }
-        public List<int> listaEspecialidades { get; set; }
+        public List<int>? listaEspecialidades { get; set; }
     }
   
 

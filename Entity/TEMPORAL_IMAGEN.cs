@@ -7,18 +7,18 @@ namespace SIGED_API.Entity
     public class TEMPORAL_IMAGEN
     {
         [Key]
-        public int temp_id { get; set; }
+        public int TEMP_ID { get; set; }
 
-        public string descripcion { get; set; }
+        public string DESCRIPCION { get; set; }
 
-        public string archivo { get; set; }
+        public string ARCHIVO { get; set; }
 
-        public int modulo { get; set; }
+        public int MODULO { get; set; }
 
 
-        public int tipoarchivo { get; set; }
+        public int TIPOARCHIVO { get; set; }
 
-        [NotMapped]
-        public IFormFile FrontArchivo { get; set; }
+      /*  [NotMapped]
+        public IFormFile? FrontArchivo { get; set; }*/
     }
 }

@@ -50,5 +50,55 @@ namespace SIGED_API.Entity
         //}
         //public string foto { get; set; }
         //public byte cv { get; set; }
+
+        public string? genero { get; set; }
+
+        public int? departamento_id { get; set; }
+
+        public int? provincia_id { get; set; }
+
+        public int? distrito_id { get; set; }
+
+        public int? estado_id { get; set; }
+
+        public string? correo_adex { get; set; }
+
+        public string? telefono_fijo { get; set; }
+
+        public string? telefono_emergencia { get; set; }
+
+        public int? via_id { get; set; }
+
+        public string? nombre_via { get; set; }
+
+        public string? NroMzLote { get; set; }
+
+        public string? interior { get; set; }
+
+        public int? departamento_id_dir { get; set; }
+
+        public int? provincia_id_dir { get; set; }
+
+        public int? distrito_id_dir { get; set; }
+
+        public bool? tiene_familiar { get; set; }
+
+        public string? nombre_familiar { get; set; }
+
+        public int? area_id { get; set; }
+
+        public int? referido_linkedin { get; set; }
+        public bool? referido_indeed { get; set; }
+        public bool? referido { get; set; }
+
+        public string? otros_medio { get; set; }
+
+        public bool? persona_discapacidad { get; set; }
+
+        public int? tipo_discapacidad_id { get; set; }
+
+        public bool? certificado { get; set; }
+
+        public string? num_certificado { get; set; }
     }
 }

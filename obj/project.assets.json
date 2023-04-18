@@ -7305,11 +7305,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Personal\\Taniguchi\\Proyecto2023\\SIGED\\Repositorio\\SIGED-API.csproj",
+      "projectUniqueName": "D:\\Personal\\Taniguchi\\Proyecto2023\\ADEX-SIGED\\Codigo\\SIGED\\Repositorio\\SIGED-API.csproj",
       "projectName": "SIGED-API",
-      "projectPath": "D:\\Personal\\Taniguchi\\Proyecto2023\\SIGED\\Repositorio\\SIGED-API.csproj",
+      "projectPath": "D:\\Personal\\Taniguchi\\Proyecto2023\\ADEX-SIGED\\Codigo\\SIGED\\Repositorio\\SIGED-API.csproj",
       "packagesPath": "C:\\Users\\Sonny\\.nuget\\packages\\",
-      "outputPath": "D:\\Personal\\Taniguchi\\Proyecto2023\\SIGED\\Repositorio\\obj\\",
+      "outputPath": "D:\\Personal\\Taniguchi\\Proyecto2023\\ADEX-SIGED\\Codigo\\SIGED\\Repositorio\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Sonny\\AppData\\Roaming\\NuGet\\NuGet.Config",

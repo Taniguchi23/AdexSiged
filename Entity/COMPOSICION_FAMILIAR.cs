@@ -12,7 +12,7 @@ namespace SIGED_API.Entity
 
         public string NOMBRE { get; set; }
 
-        public string APELLIDO_PATERNO { get; set; }
+        public string apellido_paterno { get; set; }
 
         public string APELLIDO_MATERNO { get; set; }
 

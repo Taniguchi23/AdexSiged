@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using SIGED_API.Entity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -86,7 +87,7 @@ namespace SIGED_API.Models
         public string otros_programas { get; set; }
 
         public List<Pregrado> Pregrados { get; set; }
-        public class Pregrado
+     /*   public class Pregrado
         {
             public int pregrado_id { get; set; }
 
@@ -97,11 +98,11 @@ namespace SIGED_API.Models
             public DateTime fecha_ingreso { get; set; }
 
             public DateTime fecha_salida { get; set; }
-        }
+        */
 
 
         public List<Postgrado> Postgrados { get; set; }
-        public class Postgrado
+      /*  public class Postgrado
         {
             public int postgrado_id { get; set; }
 
@@ -112,10 +113,10 @@ namespace SIGED_API.Models
             public DateTime fecha_ingreso { get; set; }
 
             public DateTime fecha_salida { get; set; }
-        }
+        }*/
 
         public List<NIVEL_INGLES> Idioma_Ingles { get; set; }
-        public class NIVEL_INGLES
+     /*   public class NIVEL_INGLES
         {
             public int nivel_ingles_id { get; set; }
 
@@ -124,11 +125,11 @@ namespace SIGED_API.Models
             public int idioma_id { get; set; }
 
             public int nivelestudio_id { get; set; }
-        }
+        }*/
 
         public List<NIVEL_OFIMATICA> Ofimatica { get; set; }
 
-        public class NIVEL_OFIMATICA
+     /*   public class NIVEL_OFIMATICA
         {
             public int nivel_ofimatica_id { get; set; }
 
@@ -137,10 +138,10 @@ namespace SIGED_API.Models
             public int ofimatica_id { get; set; }
 
             public int nivelestudio_id { get; set; }
-        }
+        }*/
 
         public List<EXPERIENCIA_LABORAL> Experiencia { get; set; }
-        public class EXPERIENCIA_LABORAL
+      /*  public class EXPERIENCIA_LABORAL
         {
             public int experiencia_laboral_id { get; set; }
 
@@ -161,7 +162,7 @@ namespace SIGED_API.Models
             public string motivo_cese { get; set; }
 
             public bool autorizo_contactar { get; set; }
-        }
+        }*/
 
 
         public int composicion_id { get; set; }
@@ -180,7 +181,7 @@ namespace SIGED_API.Models
 
 
         public List<COMPOSICION_HIJO> Hijos { get; set; }
-        public class COMPOSICION_HIJO
+      /*  public class COMPOSICION_HIJO
         {
             public int composicion_hijo_id { get; set; }
 
@@ -197,7 +198,7 @@ namespace SIGED_API.Models
             public DateTime fecha { get; set; }
 
             public int edad { get; set; }
-        }
+        }*/
 
         public int pago_id { get; set; }
 

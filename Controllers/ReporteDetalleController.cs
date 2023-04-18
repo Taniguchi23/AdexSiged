@@ -8,6 +8,7 @@ using SIGED_API.Entity;
 using SIGED_API.Ficha;
 using SIGED_API.Models;
 using SIGED_API.Models.Request;
+using SIGED_API.Models.Response;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +22,7 @@ namespace SIGED_API.Controllers
 {
     [Route("api/reportedetalle")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class ReporteDetalleController : ControllerBase
     {
 
@@ -54,7 +55,11 @@ namespace SIGED_API.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] ReporteRequest reportes)
         {
-
+            decimal rutina1 = 0;
+            decimal rutina2 = 0;
+            decimal rutina3 = 0;
+            decimal rutina4 = 0;
+            decimal total = 0;
             var result = new OkObjectResult(0);
             try
             {
@@ -65,6 +70,7 @@ namespace SIGED_API.Controllers
                     orutina1.REPORTE_ID = reportes.reporte_id;
                     orutina1.RUTINA_ID = oPostrutina1.rutina_id;
                     orutina1.CALIFICACION = oPostrutina1.calificacion;
+                    rutina1 +=  oPostrutina1.calificacion;
                     context2.RUTINA1.Add(orutina1);
                     context2.SaveChanges();
                 }
@@ -76,6 +82,7 @@ namespace SIGED_API.Controllers
                     orutina2.REPORTE_ID = reportes.reporte_id;
                     orutina2.RUTINA_ID = oPostrutina2.rutina_id;
                     orutina2.CALIFICACION = oPostrutina2.calificacion;
+                    rutina2 += oPostrutina2.calificacion;
                     context2.RUTINA2.Add(orutina2);
                     context2.SaveChanges();
                 }
@@ -86,6 +93,7 @@ namespace SIGED_API.Controllers
                     orutina3.REPORTE_ID = reportes.reporte_id;
                     orutina3.RUTINA_ID = oPostrutina3.rutina_id;
                     orutina3.CALIFICACION = oPostrutina3.calificacion;
+                    rutina3 += oPostrutina3.calificacion;
                     context2.RUTINA3.Add(orutina3);
                     context2.SaveChanges();
                 }
@@ -97,13 +105,14 @@ namespace SIGED_API.Controllers
                     orutina4.REPORTE_ID = reportes.reporte_id;
                     orutina4.RUTINA_ID = oPostrutina4.rutina_id;
                     orutina4.CALIFICACION = oPostrutina4.calificacion;
+                    rutina4 += oPostrutina4.calificacion;
                     context2.RUTINA4.Add(orutina4);
                     context2.SaveChanges();
                 }
                 
                 //var vreporte = context2.REPORTE.FirstOrDefault(p => p.REPORTE_ID == reportes.reporte_id);
 
-                var temporal_imagen = context2.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 4);
+                var temporal_imagen = context2.TEMPORAL_IMAGEN.FirstOrDefault(p => p.TIPOARCHIVO == 1 & p.MODULO == 4);
 
                 //if (vreporte != null )
 
@@ -117,20 +126,22 @@ namespace SIGED_API.Controllers
 
                 }
 
-                REPORTE oreporte = new REPORTE();
-                    oreporte.REPORTE_ID = reportes.reporte_id;
+                // REPORTE oreporte = new REPORTE();
+                // oreporte.REPORTE_ID = reportes.reporte_id;
+                    var oreporte = context2.REPORTE.FirstOrDefault(p => p.REPORTE_ID == reportes.reporte_id);
                     oreporte.POSTULANTE_ID = reportes.postulante_id;
                     oreporte.EVALUADOR_ID = reportes.evaluador_id;
                     oreporte.AREA_ID = reportes.evaluador_id;
                     oreporte.FECHA = reportes.fecha;
-                    oreporte.CAL_RUTINA1 = reportes.cal_rutina1;
-                    oreporte.CAL_RUTINA2 = reportes.cal_rutina2;
-                    oreporte.CAL_RUTINA3 = reportes.cal_rutina3;
-                    oreporte.CAL_RUTINA4 = reportes.cal_rutina4;
-                    oreporte.NOTA_FINAL = reportes.nota_final;
+                    oreporte.CAL_RUTINA1 = rutina1;
+                    oreporte.CAL_RUTINA2 = rutina2;
+                    oreporte.CAL_RUTINA3 = rutina3;
+                    oreporte.CAL_RUTINA4 = rutina4;
+                    oreporte.NOTA_FINAL = rutina1+ rutina2+ rutina3+ rutina4;
                     oreporte.OBSERVACIONES = reportes.observaciones;
-                    oreporte.ARCHIVO = temporal_imagen.archivo;
-                    oreporte.ESTADO = reportes.estado;
+                  //  oreporte.ARCHIVO = temporal_imagen.archivo;
+                    
+                    oreporte.ESTADO = oreporte.NOTA_FINAL>18? "1":"0";
                     context2.Entry(oreporte).State = EntityState.Modified;
                     context2.SaveChanges();
 
@@ -147,24 +158,23 @@ namespace SIGED_API.Controllers
 
 
 
-     /*   [HttpPost("AdjuntarImagen/{id}")]
+       [HttpPost("AdjuntarImagen/{id}")]
         public ActionResult PostImagen([FromForm] TemporalRequest temporal, int id)
         {
             try
             {
                 TEMPORAL_IMAGEN opostulante = new TEMPORAL_IMAGEN();
                 string uniqueFileName = UploadedImageReporte(temporal);
-                opostulante.archivo = uniqueFileName;
-                opostulante.descripcion = uniqueFileName;
-                opostulante.tipoarchivo = 1;
-                opostulante.modulo = 4;
+                opostulante.ARCHIVO = uniqueFileName;
+                opostulante.DESCRIPCION = uniqueFileName;
+                opostulante.TIPOARCHIVO = 1;
+                opostulante.MODULO = 4;
                 context2.TEMPORAL_IMAGEN.Add(opostulante);
                 context2.SaveChanges();
 
                 var opreporte = context2.REPORTE.FirstOrDefault(p => p.REPORTE_ID == id);
                 if (opreporte != null)
                 {
-
                     opreporte.ARCHIVO = uniqueFileName;
                     context2.Entry(opreporte).State = EntityState.Modified;
                     context2.SaveChanges();
@@ -179,25 +189,48 @@ namespace SIGED_API.Controllers
             {
                 return BadRequest();
             }
-        }*/
+        }
 
 
-  /*      private string UploadedImageReporte(TemporalRequest temporal)
+        private  String UploadedImageReporte(TemporalRequest temporal)
         {
+            
             string uniqueFileName = null;
-            if (temporal.FrontArchivo != null)
+            if (temporal.Imagen != null)
             {
-                string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "images/reporte");
-                uniqueFileName = temporal.FrontArchivo.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                string directorioActual = Directory.GetCurrentDirectory();
+                var rutaGuardadoImagen = directorioActual + "/images/reporte";
+                if (!Directory.Exists(rutaGuardadoImagen))
                 {
-                    temporal.FrontArchivo.CopyTo(fileStream);
+                    Directory.CreateDirectory(rutaGuardadoImagen);
                 }
 
+
+                
+
+                var nombreImag = Path.GetFileName(temporal.Imagen.FileName);
+                var nombreImagen = "img_" + Guid.NewGuid().ToString("N") + "" + Path.GetExtension(nombreImag);
+                var rutaImagen = Path.Combine(rutaGuardadoImagen, nombreImagen);
+
+
+                using (var stream = new FileStream(rutaImagen, FileMode.Create))
+                {
+                     temporal.Imagen.CopyToAsync(stream);
+                }
+
+                /*     string uploadsFolder = Path.Combine(webHostEnviroment.ContentRootPath, "images/reporte");
+
+                     uniqueFileName = temporal.Imagen.FileName;
+                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                     using (var fileStream = new FileStream(filePath, FileMode.Create))
+                     {
+                         temporal.Archivo.CopyTo(fileStream);
+                     }*/
+                return nombreImagen;
             }
-            return uniqueFileName;
-        }*/
+            
+            return "error";
+        }
 
 
         [HttpGet("GetImageReporte/{id}")]
@@ -215,6 +248,8 @@ namespace SIGED_API.Controllers
             }
             return null;
         }
+
+
 
 
         // PUT api/<ReporteDetalleController>/5

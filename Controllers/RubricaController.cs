@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using SIGED_API.Contexts;
 using SIGED_API.Entity;
+using SIGED_API.Models.Dao;
+using SIGED_API.Models.Response;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +13,7 @@ namespace SIGED_API.Controllers
 {
     [Route("api/rubrica")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class RubricaController : ControllerBase
     {
         private readonly AppDbContext context;
@@ -24,10 +26,29 @@ namespace SIGED_API.Controllers
 
         // GET: api/<RubricaController>
         [HttpGet]
-        public IEnumerable<Rubrica> Get()
+        public Respuesta Get()
         {
+            var respuesta = new Respuesta();
+            respuesta.status = true;
+            var rubricas = context.Rubrica.ToList();
+            var listaRubricas = new List<RubricaDao>();
+            foreach(Rubrica rubrica in rubricas)
+            {
+                var rubricaDao = new RubricaDao();
+                var detalles = context.Rubrica_Detalle.Where(r => r.Rubrica_id == rubrica.rubrica_id && r.Estado == 'A').OrderBy(p=> p.Puntaje).ToList();
+                if(detalles.Count > 0)
+                {
+                    var listaPuntaje = detalles.Select(p=>p.Puntaje).ToList();
+                    rubricaDao.ListaPuntajes = listaPuntaje;
+                }
+                rubricaDao.Rubrica = rubrica;
+                rubricaDao.ListaRubrica = detalles;
+                listaRubricas.Add(rubricaDao);
+            }
 
-            return context.Rubrica.ToList();
+            respuesta.Data = listaRubricas;
+
+            return respuesta;
 
         }
 

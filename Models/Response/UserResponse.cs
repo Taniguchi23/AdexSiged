@@ -16,6 +16,13 @@
         public string mensaje { get; set; }
 
         public int postulante_id { get; set; }
+        public string correo { get; set; }
+        public string password { get; set; }
+        public string user { get; set; }
+        public int id { get; set; }
+        public int subRol { get; set; }
+        public string descripcionSubRol { get; set; }
+
 
 
     }

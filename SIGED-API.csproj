@@ -30,7 +30,6 @@
   <ItemGroup>
     <Folder Include="Entity\Ficha\" />
     <Folder Include="files\" />
-    <Folder Include="Helpers\" />
     <Folder Include="images\ficha\" />
   </ItemGroup>
 

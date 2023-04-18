@@ -19,7 +19,7 @@ namespace SIGED_API.Controllers
 {
     [Route("api/seleccion")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class SeleccionController : ControllerBase
     {
         private readonly AppDbContext context;
@@ -287,19 +287,52 @@ namespace SIGED_API.Controllers
             respuesta.status = false;
             try
             {
-                var postulante = context.Seleccion_cabecera.FirstOrDefault(p => p.postulante_id == seleccion.postulante_id & p.semestre_id == seleccion.semestre_id & p.area_id == seleccion.area_id);
+              //  var postulante = context.Seleccion_cabecera.FirstOrDefault(p => p.postulante_id == seleccion.postulante_id & p.semestre_id == seleccion.semestre_id & p.area_id == seleccion.area_id);
+                var postulante = context.Seleccion_cabecera.FirstOrDefault(p => p.postulante_id == seleccion.postulante_id);
 
                 if (postulante  != null)
                 {
-                    respuesta.Data = "Ya existe la selección";
+                    var p = context.Postulante.FirstOrDefault(p => p.postulante_id == seleccion.postulante_id);
+                    if (p != null)
+                    {
+                        p.seleccion_id = postulante.seleccion_id;
+                        context.Entry(p).State = EntityState.Modified;
+                        context.SaveChanges();
+                    }
+
+
+                    var objetoJson = new
+                    {
+                        IdSelección = postulante.seleccion_id,
+                        Mensaje = "Ya existe la selección",
+                       
+                    };
+                    respuesta.Data = objetoJson;
                     return respuesta;
                 }
                 else
                 {
                     context.Seleccion_cabecera.Add(seleccion);
                     context.SaveChanges();
+                    var p = context.Postulante.FirstOrDefault(p => p.postulante_id == seleccion.postulante_id);
+                    if (p != null)
+                    {
+                        p.seleccion_id = seleccion.seleccion_id;
+                        context.Entry(p).State = EntityState.Modified;
+                        context.SaveChanges();
+                    }
+
+                    var objetoJson = new
+                    {
+                        IdSelección = seleccion.seleccion_id,
+                        Mensaje = "Seleccion creada",
+
+                    };
+                    respuesta.Data = objetoJson;
+                   
+
                     respuesta.status = true;
-                    respuesta.Data = "Seleccion creada";
+                   
                     return respuesta;
                 }
                

@@ -29,9 +29,10 @@ using Org.BouncyCastle.Asn1.Ocsp;
 using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Org.BouncyCastle.Crypto.Generators;
-using SIGED_API.Helpers;
+
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Text;
+using SIGED_API.Helpers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -66,8 +67,8 @@ namespace SIGED_API.Controllers
             var postulanteTemp = context.Postulante.FirstOrDefault(p => p.correo == temporalRequest.correo || p.numero == temporalRequest.numero);
             if (postulanteTemp != null)
             {
-                if (postulanteTemp.numero == temporalRequest.numero) listaErrores.Add(new Error() { Campo = "numero", Detalles = "El numero de documento ya existe" });
-                if (postulanteTemp.correo == temporalRequest.correo) listaErrores.Add(new Error() { Campo = "correo", Detalles = "El correo ya existe" });
+                if (postulanteTemp.numero.Trim() == temporalRequest.numero) listaErrores.Add(new Error() { Campo = "numero", Detalles = "El numero de documento ya existe" });
+                if (postulanteTemp.correo.Trim() == temporalRequest.correo) listaErrores.Add(new Error() { Campo = "correo", Detalles = "El correo ya existe" });
                 respuesta.Data = listaErrores;
                 return respuesta;
             }
@@ -180,15 +181,23 @@ namespace SIGED_API.Controllers
             return respuesta;
         }
 
+        [HttpGet]
+
+        public IEnumerable<Postulante> GetLista()
+        {
+
+            return context.Postulante.ToList();
+
+        }
 
         // GET: api/<PostulanteController>
         [HttpGet("listapostulantes")]
 
-        public  IEnumerable<Postulante> GetListaPostulante()
+        public IEnumerable<Postulante> GetListaPostulante()
         {
-            
-           return context.Postulante.Where(p => p.estado_contratado != true).ToList();
-               
+
+            return context.Postulante.Where(p => p.estado_contratado != true).ToList();
+
         }
 
         // GET: api/<PostulanteController>
@@ -218,8 +227,8 @@ namespace SIGED_API.Controllers
                    numero = res.r.numero,
                    fec_nacimiento = res.r.fec_nacimiento,
                    celular = res.r.celular,
-                   contrasena = Encrypt.GetSHA256(res.r.contrasena),
-                   rep_contrasena = Encrypt.GetSHA256(res.r.rep_contrasena),
+                   contrasena = "",
+                   rep_contrasena = "",
                    imageurl = res.r.imageurl,
                    archivocv = res.r.archivocv,
                    rol_id = res.r.rol_id,
@@ -375,17 +384,10 @@ namespace SIGED_API.Controllers
         [HttpPut()]
         public ActionResult Put([FromBody] PostulanteRequest postulante)
         {
-
-
-
             //    var temporal_imagen = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 1 & p.modulo == 1);
-
             //var temporal_archivo = context.TEMPORAL_IMAGEN.FirstOrDefault(p => p.tipoarchivo == 2 & p.modulo == 1);
-
-
             ////////
             var postulantereque = context.Postulante.FirstOrDefault(p => p.postulante_id == postulante.postulante_id);
-
             Postulantes opostulante = new Postulantes();
             opostulante.postulante_id = postulante.postulante_id;
             opostulante.nombre = postulante.nombre;
@@ -399,7 +401,6 @@ namespace SIGED_API.Controllers
 
             if (postulante.contrasena != null)
             {
-
                 opostulante.contrasena = Encrypt.GetSHA256(postulante.contrasena);
             }
             else
@@ -475,16 +476,12 @@ namespace SIGED_API.Controllers
         public string Notificar([FromBody] NOTIFICACION notificacion)
         {
             var vnotificacion = context.ENVIAR_CORREO.FirstOrDefault(p => p.envio_id == 2);
-
             var vpostulante = context.Postulante.FirstOrDefault(p => p.postulante_id == notificacion.postulante_id);
-
             var email = new MimeMessage();
-
             email.From.Add(MailboxAddress.Parse(vnotificacion.destinatario));
             email.To.Add(MailboxAddress.Parse(vpostulante.correo));
             email.Subject = vnotificacion.asunto;
             email.Body = new TextPart(TextFormat.Html) { Text = vnotificacion.mensaje };
-
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
             smtp.Connect("smtp.office365.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
             smtp.Authenticate("ronald.livia@outlook.com", "Yama314162$");
@@ -582,7 +579,7 @@ namespace SIGED_API.Controllers
         }
 
         [HttpGet("detalle/{id}")]
-        [Authorize]
+       // [Authorize]
         public async Task<Respuesta> GetDetallePostulante([FromRoute] int id)
         {
             var response = new Respuesta();
@@ -606,7 +603,7 @@ namespace SIGED_API.Controllers
                     postulanteDetalle.FlagSeleccion = true;
                     postulanteDetalle.IdSeleccion = seleccion.area_id;
                     postulanteDetalle.IdSemestre = seleccion.semestre_id;
-                    postulanteDetalle.IdPreguntaSeleccion = seleccion.seleccion_id;
+                    postulanteDetalle.IdPreguntaSeleccion = postulante.seleccion_id;
 
 
                 }
@@ -631,6 +628,7 @@ namespace SIGED_API.Controllers
                 foreach (Especialidad esp in listaEspecialidadPostulante)
                 {
                     var cursos = context.Especialidad_cursos.Where(c => c.Especialidad_id == esp.especialidad_id).ToList();
+                    cursos.Sort((c1, c2) => c1.Nombre.CompareTo(c2.Nombre));
                     var DetalleEspecialidades = new DetalleEspecialidades();
                     DetalleEspecialidades.Especialidad = esp;
                     DetalleEspecialidades.Cursos = cursos;
@@ -661,7 +659,7 @@ namespace SIGED_API.Controllers
                       join s in context.Seleccion_cabecera on p.postulante_id equals s.postulante_id
                       //join e in context.DETALLE_EVALUACION on p.postulante_id equals e.POSTULANTE_ID
                       where p.estado_contratado == true && s.semestre_id.Equals(id)
-                      select new 
+                      select new
                       {
                           postulante_id = p.postulante_id,
                           nombre = p.nombre,
@@ -673,7 +671,8 @@ namespace SIGED_API.Controllers
                           estado_contratado = p.estado_contratado,
                       };
             var listaPostulantes = new List<PostulanteEvaluacion>();
-           foreach ( var item in sql ) {
+            foreach (var item in sql)
+            {
                 var evaluacion = context.DETALLE_EVALUACION.FirstOrDefault(d => d.POSTULANTE_ID == item.postulante_id);
                 var postulante = new PostulanteEvaluacion();
                 postulante.postulante_id = item.postulante_id;
@@ -685,12 +684,10 @@ namespace SIGED_API.Controllers
                 postulante.rol_id = item.rol_id;
                 postulante.estado_contratado = item.estado_contratado;
 
-
-
                 if (evaluacion != null)
                 {
-                    postulante.flagTipo = ""+evaluacion.ESTADO;
-                    postulante.detalle_evaluacion_id = evaluacion.DETALLE_EVALUACION_ID;                 
+                    postulante.flagTipo = "" + evaluacion.ESTADO;
+                    postulante.detalle_evaluacion_id = evaluacion.DETALLE_EVALUACION_ID;
                     postulante.enc_estu = evaluacion.ENC_ESTU;
                     postulante.cum_adm = evaluacion.CUM_ADM;
                     postulante.acom_doc = evaluacion.ACOM_DOC;
@@ -698,9 +695,9 @@ namespace SIGED_API.Controllers
                     postulante.cum_vir = evaluacion.CUM_VIR;
                     postulante.nota_final = evaluacion.NOTA_FINAL;
                 }
-                listaPostulantes.Add( postulante );
+                listaPostulantes.Add(postulante);
             }
-            
+
             respuesta.status = true;
             respuesta.Data = listaPostulantes;
 
@@ -718,29 +715,55 @@ namespace SIGED_API.Controllers
                 respuesta.Data = "No existe el email";
                 return respuesta;
             }
+
+            string codigo = Guid.NewGuid().ToString("N");
+
+
             var email = new MimeMessage();
 
             email.From.Add(MailboxAddress.Parse("ronald.livia@outlook.com"));
             email.To.Add(MailboxAddress.Parse(postulante.correo));
             email.Subject = "ADEX: Recuparación de contraseña";
+            var url = recuperarClaveRequest.ruta + "?code=" + codigo + "&id=" + postulante.postulante_id;
             var html = "<p>      Estimado/a postulante,    </p>    " +
                 "<p>      De nuestra mayor consideración,    </p>   " +
                 " <p>      Desde ya, esperamos que se encuentre bien de salud al igual que sus seres queridos.     </p>   " +
-                " <p> <b>     Usted ha solicitado una recuperación de su contraseña y para ello le enviamos el siguiente link donde podrá hacer el cambio.   </b> </p> < br > " +
-                recuperarClaveRequest.ruta + "?code="+Encryption.EncryptMessage(postulante.postulante_id+"@"+postulante.correo)+ 
-
-                "  <p>      Si usted no ha solicitado una recuperación de contraseña, comuníquese inmediatamente a 941488793los principales cursos que dictaría, así como los que, en base a la experiencia profesional adquirida, podrían dictar, señalar con una “X” su disponibilidad para el dictado del curso para el Semestre $PARAM_SEMESTRE, según los siguientes turnos:     </p>   ";
-              
-              
+                " <p> <b>     Usted ha solicitado una recuperación de su contraseña y para ello le enviamos el siguiente link donde podrá hacer el cambio.   </b> </p> <br/>" +
+                "<a href='" + url + "' >" + url + "</a> " +
+                "  <p>      Si usted no ha solicitado una recuperación de contraseña, comuníquese inmediatamente a 941488793";
+            postulante.rep_contrasena = codigo;
+            context.Entry(postulante).State = EntityState.Modified;
+            context.SaveChanges();
             email.Body = new TextPart(TextFormat.Html) { Text = html };
 
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
-            smtp.Connect("smtp.office365.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            smtp.Authenticate("ronald.livia@outlook.com", "Yama314162$");
+            smtp.Connect(Settings.smtp, Settings.puerto, MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate(Settings.email, Settings.password);
             smtp.Send(email);
             smtp.Disconnect(true);
+            respuesta.status = true;
 
+            return respuesta;
+        }
 
+        [HttpPost("recuperarClave/verificar")]
+        public Respuesta verificarRecuperarClave([FromBody] VerificarRecuperarClaveRequest v)
+        {
+            var respuesta = new Respuesta();
+            respuesta.status = false;
+            var postulante = context.Postulante.FirstOrDefault(p => p.postulante_id == v.IdPostulante && p.rep_contrasena == v.Codigo);
+            if (postulante == null)
+            {
+                respuesta.Data = "El código ha expirado.";
+                return respuesta;
+            }
+
+            postulante.contrasena = Encrypt.GetSHA256(v.Clave);
+            postulante.rep_contrasena = null;
+            context.Entry(postulante).State = EntityState.Modified;
+            context.SaveChanges();
+            respuesta.status= true;
+            respuesta.Data= "Se ha realizado el cambio de contraseña.";
             return respuesta;
         }
     }

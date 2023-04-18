@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace SIGED_API.Models
 {
@@ -10,5 +11,8 @@ namespace SIGED_API.Models
         public int postulante_id { get; set; }
 
         public string estado { get; set; }
+        public DateTime? fecha { get; set; }
+        public DateTime? created_at { get; set; }
+        
     }
 }

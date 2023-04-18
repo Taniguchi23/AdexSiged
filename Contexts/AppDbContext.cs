@@ -76,6 +76,7 @@ namespace SIGED_API.Contexts
         //public DbSet<Postgrado> Postgrado { get; set; }
 
         public DbSet<Rubrica> Rubrica { get; set; }
+        public DbSet<Rubrica_Detalle> Rubrica_Detalle { get; set; }
 
         public DbSet<GRADOACAD_PREGRADO> GRADOACAD_PREGRADO { get; set; }
 
